@@ -1,5 +1,7 @@
 #include "NouWindow.h"
+#include "Graphics.h"
 #include "resource.h"
+
 #include <sstream>
 
 NouWindow::WindowClass NouWindow::WindowClass::wndClass;
@@ -97,6 +99,9 @@ const char* NouWindow::Exception::what() const noexcept
 
 
 NouWindow::NouWindow(int width, int height, const char* name)
+	:
+	width(width),
+	height(height)
 {
 	RECT wr;
 	wr.left = 100;
@@ -128,9 +133,8 @@ NouWindow::NouWindow(int width, int height, const char* name)
 		throw CHWND_LAST_EXCEPT();
 	}
 
-
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
-
+	pGfx = new Graphics(hWnd);
 
 }
 
@@ -140,7 +144,15 @@ NouWindow::~NouWindow() {
 
 void NouWindow::SetTitle(const char* title)
 {
-	SetWindowText(hWnd, title);
+	if (SetWindowText(hWnd, title) == 0)
+	{
+		throw CHWND_LAST_EXCEPT();
+	}
+}
+
+Graphics& NouWindow::Gfx()
+{
+	return *pGfx;
 }
 
 bool NouWindow::ProcessMessage()
@@ -163,7 +175,7 @@ bool NouWindow::ProcessMessage()
 	return false;
 }
 
-LRESULT WINAPI NouWindow::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT CALLBACK NouWindow::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	if (msg == WM_NCCREATE)
 	{
@@ -178,7 +190,7 @@ LRESULT WINAPI NouWindow::HandleMsgSetup(HWND hWnd, UINT msg, WPARAM wParam, LPA
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-LRESULT WINAPI NouWindow::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT CALLBACK NouWindow::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	NouWindow* window = reinterpret_cast<NouWindow*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 	return window->HandleMsg(hWnd, msg, wParam, lParam);

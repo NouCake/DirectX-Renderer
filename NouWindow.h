@@ -2,6 +2,7 @@
 
 #include "NouWin.h"
 #include "NouException.h"
+#include "Graphics.h"
 
 
 class NouWindow
@@ -43,6 +44,7 @@ public:
 	NouWindow(const NouWindow&) = delete;
 	NouWindow& operator = (const NouWindow&) = delete;
 	void SetTitle(const char* title);
+	Graphics& Gfx();
 
 public:
 	static bool ProcessMessage();
@@ -57,6 +59,7 @@ private:
 	int width;
 	int height;
 	HWND hWnd;
+	Graphics* pGfx;
 };
 
 #define CHWND_EXCEPT( hr ) NouWindow::Exception( __LINE__,__FILE__,hr )
