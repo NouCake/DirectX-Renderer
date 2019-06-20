@@ -1,5 +1,5 @@
-#include "NouWindow.h"
-
+#include "NouEngine.h"
+#include "NouException.h"
 
 int CALLBACK WinMain(
 	HINSTANCE hInstance,
@@ -8,27 +8,22 @@ int CALLBACK WinMain(
 	int		cCmdShow)
 {
 
-	NouWindow window(640, 480, "Super Title");
-
-	NouWindow* wn = &window;
-
-	
-
-
-	MSG msg;
-	BOOL gResult;
-	while ((gResult = GetMessage(&msg, 0, 0, 0)) > 0)
+	try
 	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		return NouEngine{}.Run();
 	}
-
-	if (gResult == -1) {
-		return -1;
-	}
-	else
+	catch (const NouException& e)
 	{
-		return msg.wParam;
+		MessageBox(nullptr, e.what(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
+	}
+	catch (const std::exception& e)
+	{
+		MessageBox(nullptr, e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
+	}
+	catch (...)
+	{
+		MessageBox(nullptr, "No details available", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
 	}
 
+	return -1;
 }
