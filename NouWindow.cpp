@@ -1,5 +1,4 @@
 #include "NouWindow.h"
-#include "Graphics.h"
 #include "resource.h"
 
 #include <sstream>
@@ -134,7 +133,7 @@ NouWindow::NouWindow(int width, int height, const char* name)
 	}
 
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
-	pGfx = new Graphics(hWnd);
+	pGfx = new GraphicsD11(hWnd);
 
 }
 
@@ -150,7 +149,7 @@ void NouWindow::SetTitle(const char* title)
 	}
 }
 
-Graphics& NouWindow::Gfx()
+GraphicsD11& NouWindow::Gfx()
 {
 	return *pGfx;
 }

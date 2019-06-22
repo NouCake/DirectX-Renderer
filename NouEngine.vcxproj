@@ -19,16 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="GraphicsD11.cpp" />
+    <ClCompile Include="GraphicsD13.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NouEngine.cpp" />
     <ClCompile Include="NouException.cpp" />
+    <ClCompile Include="NouTimer.cpp" />
     <ClCompile Include="NouWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Graphics.h" />
+    <ClInclude Include="GraphicsD11.h" />
+    <ClInclude Include="GraphicsD13.h" />
     <ClInclude Include="NouEngine.h" />
     <ClInclude Include="NouException.h" />
+    <ClInclude Include="NouTimer.h" />
     <ClInclude Include="NouWin.h" />
     <ClInclude Include="NouWindow.h" />
     <ClInclude Include="resource.h" />

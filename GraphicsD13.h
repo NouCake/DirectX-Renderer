@@ -9,16 +9,18 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
-class Graphics
+class GraphicsD13
 {
 public:
-	Graphics(HWND hWnd);
-	Graphics(const Graphics&) = delete;
-	Graphics& operator=(const Graphics&) = delete;
-	~Graphics() = default;
+	GraphicsD13(HWND hWnd);
+	GraphicsD13(const GraphicsD13&) = delete;
+	GraphicsD13& operator=(const GraphicsD13&) = delete;
+	~GraphicsD13() = default;
 
 	void OnFrameEnd();
 	void OnFrameStart();
+	
+	void ClearBuffer(float r, float g, float b, float a);
 
 private:
 	HRESULT res;
@@ -45,7 +47,8 @@ private:
 	Microsoft::WRL::ComPtr <ID3D12Fence> pFence;
 	HANDLE hFence = nullptr;
 	unsigned long long mFenceVal;
-	
+
+	D3D12_CPU_DESCRIPTOR_HANDLE curRtHandle;
 };
 
 

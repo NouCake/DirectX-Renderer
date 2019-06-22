@@ -1,6 +1,7 @@
 #pragma once
 
 #include "NouWindow.h"
+#include "NouTimer.h"
 
 class NouEngine
 {
@@ -10,6 +11,8 @@ public:
 
 private:
 	NouWindow window;
+	NouTimer timer;
+	
 	void ExecuteFrame();
 
 };

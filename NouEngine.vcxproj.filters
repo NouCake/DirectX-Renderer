@@ -27,7 +27,13 @@
     <ClCompile Include="NouEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics.cpp">
+    <ClCompile Include="NouTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsD13.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsD11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,7 +53,13 @@
     <ClInclude Include="NouEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics.h">
+    <ClInclude Include="NouTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsD13.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsD11.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,8 +1,8 @@
-#include "Graphics.h"
+#include "GraphicsD13.h"
 #include "NouException.h"
 #include "NouWindow.h"
 
-Graphics::Graphics(HWND hWnd)
+GraphicsD13::GraphicsD13(HWND hWnd)
 {
 	res = D3D12CreateDevice(
 		nullptr,
@@ -30,7 +30,7 @@ Graphics::Graphics(HWND hWnd)
 }
 
 
-void Graphics::CreateSwapChain(HWND hWnd, IDXGIFactory4* pFactory)
+void GraphicsD13::CreateSwapChain(HWND hWnd, IDXGIFactory4* pFactory)
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
 
@@ -60,7 +60,7 @@ void Graphics::CreateSwapChain(HWND hWnd, IDXGIFactory4* pFactory)
 	CHECK_HR_EXCEPT();
 }
 
-void Graphics::CreateCommandQueue()
+void GraphicsD13::CreateCommandQueue()
 {
 	D3D12_COMMAND_QUEUE_DESC cd = {};
 	cd.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
@@ -72,7 +72,7 @@ void Graphics::CreateCommandQueue()
 	CHECK_HR_EXCEPT();
 }
 
-void Graphics::CreateDescHeap()
+void GraphicsD13::CreateDescHeap()
 {
 	D3D12_DESCRIPTOR_HEAP_DESC rc = {};
 	rc.NumDescriptors = 2;
@@ -83,7 +83,7 @@ void Graphics::CreateDescHeap()
 	CHECK_HR_EXCEPT();
 }
 
-void Graphics::RenderTargetShit()
+void GraphicsD13::RenderTargetShit()
 {
 	D3D12_DESCRIPTOR_HEAP_DESC rc = {};
 	rc.NumDescriptors = 2;
@@ -116,7 +116,7 @@ void Graphics::RenderTargetShit()
 	mBufferIndex = pSwap->GetCurrentBackBufferIndex();
 }
 
-void Graphics::CommandShit()
+void GraphicsD13::CommandShit()
 {
 	res = pDevice->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
@@ -137,7 +137,7 @@ void Graphics::CommandShit()
 	CHECK_HR_EXCEPT();
 }
 
-void Graphics::FenceShit()
+void GraphicsD13::FenceShit()
 {
 	res = pDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, __uuidof(ID3D12Fence), (void**)& pFence);
 	CHECK_HR_EXCEPT();
@@ -148,11 +148,10 @@ void Graphics::FenceShit()
 	mFenceVal = 1;
 }
 
-void Graphics::OnFrameStart()
+void GraphicsD13::OnFrameStart()
 {
 
 	D3D12_RESOURCE_BARRIER barrier;
-	D3D12_CPU_DESCRIPTOR_HANDLE rtHandle;
 	unsigned int rtSize;
 
 	res = pCmdAlloc->Reset();
@@ -169,28 +168,46 @@ void Graphics::OnFrameStart()
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	pCmdList->ResourceBarrier(1, &barrier);
 
-	rtHandle = rtViewHeap->GetCPUDescriptorHandleForHeapStart();
+	curRtHandle = rtViewHeap->GetCPUDescriptorHandleForHeapStart();
 	rtSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	if (mBufferIndex == 1)
 	{
-		rtHandle.ptr += rtSize;
+		curRtHandle.ptr += rtSize;
 	}
 
-	pCmdList->OMSetRenderTargets(1, &rtHandle, FALSE, NULL);
+	pCmdList->OMSetRenderTargets(1, &curRtHandle, FALSE, NULL);
 
-	float color[4];
-	color[0] = 0.1f;
-	color[1] = 0.2f;
-	color[2] = 0.7f;
-	color[3] = 1.0f;
-	pCmdList->ClearRenderTargetView(rtHandle, color, 0, NULL);
 
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	pCmdList->ResourceBarrier(1, &barrier);
+
 }
 
-void Graphics::OnFrameEnd()
+struct Vertex
+{
+	float x;
+	float y;
+};
+
+const Vertex verts[] =
+{
+	{0.0f, 0.5f},
+	{0.5f,-0.5f},
+	{-0.5f, -0.5f}
+};
+
+void GraphicsD13::ClearBuffer(float r, float g, float b, float a)
+{
+
+	const float color[4] = { r, g, b, a };
+	pCmdList->ClearRenderTargetView(curRtHandle, color, 0, NULL);
+
+
+
+}
+
+void GraphicsD13::OnFrameEnd()
 {
 
 
@@ -226,5 +243,4 @@ void Graphics::OnFrameEnd()
 	}
 
 	mBufferIndex == 0 ? mBufferIndex = 1 : mBufferIndex = 0;
-
 }
