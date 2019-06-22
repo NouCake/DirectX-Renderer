@@ -16,6 +16,9 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{2707cb56-4aca-4340-ab9a-4cc7b3315851}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Bindable">
+      <UniqueIdentifier>{2819504a-8d12-41b8-9d4f-ce127c9c28ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -64,6 +67,9 @@
     </ClInclude>
     <ClInclude Include="GraphicsD11.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bindable.h">
+      <Filter>Bindable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

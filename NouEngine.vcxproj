@@ -28,6 +28,7 @@
     <ClCompile Include="NouWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bindable.h" />
     <ClInclude Include="GraphicsD11.h" />
     <ClInclude Include="GraphicsD13.h" />
     <ClInclude Include="NouEngine.h" />

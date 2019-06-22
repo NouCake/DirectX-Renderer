@@ -3,6 +3,8 @@
 
 #define CHECK_HR_EXCEPT() if(FAILED(res)) throw NouWindow::Exception( __LINE__, __FILE__, res);
 
+namespace dx = DirectX;
+
 GraphicsD11::GraphicsD11(HWND hWnd)
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
@@ -50,6 +52,20 @@ GraphicsD11::GraphicsD11(HWND hWnd)
 	CHECK_HR_EXCEPT();
 
 
+
+	SetBuffers();
+	SetShaders(L"vertex.cso", L"frag.cso");
+	pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), nullptr);
+
+	//SET VIEWPORT
+	D3D11_VIEWPORT vp = {};
+	vp.Width = 640;
+	vp.Height = 480;
+	vp.MinDepth = 0;
+	vp.MaxDepth = 1;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+	pContext->RSSetViewports(1u, &vp);
 }
 
 void GraphicsD11::OnFrameEnd()
@@ -68,53 +84,105 @@ void GraphicsD11::ClearBuffer(float r, float g, float b, float a)
 	pContext->ClearRenderTargetView(pTarget.Get(), color);
 }
 
-void GraphicsD11::DrawTriangle()
+void GraphicsD11::SetBuffers()
 {
-
-	struct Vertex
-	{
-		float x;
-		float y;
+	//Generating Data
+	VertexInput vi[1024] = {
+		{{ -0.5f, 0.5f }, { 255,000,000,255 }},
+		{{  0.5f, 0.5f }, { 255,255,000,255 }},
+		{{ -0.0f,-0.5f }, { 000,255,255,255 }},
 	};
 
-	const Vertex verts[] = {
-		{ -.5f, 0.5f},
-		{ 0.5f, 0.5f},
-		{ -.5f, -.5f},
-		{ 0.5f, -.5f},
-		{ -1, -1},
-		{ 1, -1}
+	UINT16 ind[1024] = {
+		0, 1, 2
 	};
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pVertexBuffer;
+	//Creating Vertex Buffer
 	D3D11_BUFFER_DESC bd = {};
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.CPUAccessFlags = 0u;
 	bd.MiscFlags = 0u;
-	bd.ByteWidth = sizeof(verts);
-	bd.StructureByteStride = sizeof(Vertex);
+	bd.ByteWidth = sizeof(VertexInput) * 1024;
+	bd.StructureByteStride = sizeof(VertexInput);
 
 	D3D11_SUBRESOURCE_DATA sd = {};
-	sd.pSysMem = verts;
+	sd.pSysMem = vi;
 
 	res = pDevice->CreateBuffer(&bd, &sd, &pVertexBuffer);
 	CHECK_HR_EXCEPT();
 
-	const UINT stride = sizeof(Vertex);
+	//Binding VertexBuffer
+	const UINT stride = sizeof(VertexInput);
 	const UINT offset = 0u;
-
 	pContext->IASetVertexBuffers(0u, 1u, pVertexBuffer.GetAddressOf(), &stride, &offset);
 
+	bd = {};
+	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.CPUAccessFlags = 0u;
+	bd.MiscFlags = 0u;
+	bd.ByteWidth = sizeof(UINT16) * 1024;
+	bd.StructureByteStride = sizeof(UINT16);
 
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVS;
-	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
+	sd = {};
+	sd.pSysMem = ind;
 
-	//LOAD PIXEL SHADER
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> pFS;
-	res = D3DReadFileToBlob(L"frag.cso", &pBlob);
+	res = pDevice->CreateBuffer(&bd, &sd, &pIndexBuffer);
 	CHECK_HR_EXCEPT();
 
+	pContext->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+
+	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+	const ConstantBuffer cb = {
+		1,	0,	0,	0.25f,
+		0,	1,	0,	0,
+		0,	0,	1,	0,
+		0,	0,	0,	1
+	};
+
+
+	bd = {};
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bd.Usage = D3D11_USAGE_DYNAMIC;
+	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	bd.MiscFlags = 0u;
+	bd.ByteWidth = sizeof(ConstantBuffer) * 1;
+	bd.StructureByteStride = sizeof(ConstantBuffer);
+
+	sd = {};
+	sd.pSysMem = &cb;
+
+	res = pDevice->CreateBuffer(&bd, &sd, &pConstBuffer);
+	CHECK_HR_EXCEPT();
+
+	pContext->VSSetConstantBuffers(0, 1, pConstBuffer.GetAddressOf());
+}
+
+void GraphicsD11::UpdateGeometry(ConstantBuffer cb)
+{
+
+	D3D11_MAPPED_SUBRESOURCE sr;
+	res = pContext->Map(
+		pConstBuffer.Get(),
+		0u,
+		D3D11_MAP_WRITE_DISCARD,
+		0u, 
+		&sr
+		);
+	memcpy(sr.pData, &cb, sizeof(ConstantBuffer));
+	pContext->Unmap(pConstBuffer.Get(), 0u);
+
+}
+
+void GraphicsD11::SetShaders(LPCWSTR pathVertex, LPCWSTR pathFragment)
+{
+	//Creating PixelShader
+	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
+	res = D3DReadFileToBlob(pathFragment, &pBlob);
+	CHECK_HR_EXCEPT();
+	
 	res = pDevice->CreatePixelShader(
 		pBlob->GetBufferPointer(),
 		pBlob->GetBufferSize(),
@@ -122,7 +190,7 @@ void GraphicsD11::DrawTriangle()
 		&pFS);
 	CHECK_HR_EXCEPT();
 
-	//LOAD VERTEX SHADER
+	//Creating Vertex Shader
 	res = D3DReadFileToBlob(L"vertex.cso", &pBlob);
 	CHECK_HR_EXCEPT();
 
@@ -133,20 +201,16 @@ void GraphicsD11::DrawTriangle()
 		&pVS);
 	CHECK_HR_EXCEPT();
 
-	//CREATE INPUT LAYOUT OF VERTEX & BIND
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> pInputLayout;
-	D3D11_INPUT_ELEMENT_DESC ied = {};
-	ied.SemanticName = "Position";
-	ied.SemanticIndex = 0;
-	ied.Format = DXGI_FORMAT_R32G32_FLOAT;
-	ied.InputSlot = 0;
-	ied.AlignedByteOffset = 0;
-	ied.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-	ied.InstanceDataStepRate = 0;
+	//
+	D3D11_INPUT_ELEMENT_DESC ied[] = {
+		{"Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, sizeof(Vertex), D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
 
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> pInputLayout;
 	res = pDevice->CreateInputLayout(
-		&ied,
-		1,
+		ied,
+		2,
 		pBlob->GetBufferPointer(),
 		pBlob->GetBufferSize(),
 		&pInputLayout
@@ -159,22 +223,11 @@ void GraphicsD11::DrawTriangle()
 	//BIND SHADER
 	pContext->VSSetShader(pVS.Get(), nullptr, 0);
 	pContext->PSSetShader(pFS.Get(), nullptr, 0);
+}
 
-	//SET RENDER TARGET
-	pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), nullptr);
-	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+void GraphicsD11::DrawTriangle()
+{
 
-
-	//SET VIEWPORT
-	D3D11_VIEWPORT vp = {};
-	vp.Width = 640;
-	vp.Height = 480;
-	vp.MinDepth = 0;
-	vp.MaxDepth = 1;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	pContext->RSSetViewports(1u, &vp);
-
-	pContext->Draw((UINT)std::size(verts), 0u);
+	pContext->DrawIndexed(3, 0, 0);
 
 }
