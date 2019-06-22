@@ -27,6 +27,6 @@ int NouEngine::Run()
 
 void NouEngine::ExecuteFrame()
 {
-
+	window.Gfx().OnFrameStart();
 	window.Gfx().OnFrameEnd();
 }

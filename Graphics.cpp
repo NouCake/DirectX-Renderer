@@ -1,40 +1,37 @@
 #include "Graphics.h"
 #include "NouException.h"
+#include "NouWindow.h"
 
 Graphics::Graphics(HWND hWnd)
 {
-
-	HRESULT res;
 	res = D3D12CreateDevice(
 		nullptr,
-		D3D_FEATURE_LEVEL_12_0,
+		D3D_FEATURE_LEVEL_12_1,
 		__uuidof(ID3D12Device),
 		(void**)&pDevice
 	);
+	CHECK_HR_EXCEPT();
 
-	if (FAILED(res)) {
-		throw NouException(__LINE__, __FILE__);
-	}
-
+	CreateCommandQueue();
 
 	IDXGIFactory4* pFactory = nullptr;
 	res = CreateDXGIFactory1(__uuidof(IDXGIFactory4), (void**)&pFactory);
-	if (FAILED(res)) {
-		throw NouException(__LINE__, __FILE__);
-	}
+	CHECK_HR_EXCEPT();
+
+	CreateSwapChain(hWnd, pFactory);
+
+	pFactory->Release();
+
+	CreateDescHeap();
+	RenderTargetShit();
+	CommandShit();
+	FenceShit();
+
+}
 
 
-	D3D12_COMMAND_QUEUE_DESC cd = {};
-	cd.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-	cd.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
-	cd.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-	cd.NodeMask = 0;
-
-	res = pDevice->CreateCommandQueue(&cd, __uuidof(ID3D12CommandQueue), (void**)&pCommandQueue);
-	if (FAILED(res)) {
-		throw NouException(__LINE__, __FILE__);
-	}
-
+void Graphics::CreateSwapChain(HWND hWnd, IDXGIFactory4* pFactory)
+{
 	DXGI_SWAP_CHAIN_DESC sd = {};
 
 	sd.BufferDesc.Height = 0;
@@ -55,175 +52,179 @@ Graphics::Graphics(HWND hWnd)
 	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	sd.Flags = 0;
 
+	IDXGISwapChain* swap;
+	res = pFactory->CreateSwapChain(pCommandQueue.Get(), &sd, &swap);
+	CHECK_HR_EXCEPT();
 
-	res = pFactory->CreateSwapChain(pCommandQueue, &sd, &pSwap);
-	if (FAILED(res)) {
-		throw NouException(res, __FILE__);
-	}
+	res = swap->QueryInterface(__uuidof(IDXGISwapChain3), (void**)&pSwap);
+	CHECK_HR_EXCEPT();
+}
 
-	pFactory->Release();
+void Graphics::CreateCommandQueue()
+{
+	D3D12_COMMAND_QUEUE_DESC cd = {};
+	cd.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+	cd.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
+	cd.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+	cd.NodeMask = 0;
 
+	res = pDevice->CreateCommandQueue(&cd, __uuidof(ID3D12CommandQueue), (void**)& pCommandQueue);
+	CHECK_HR_EXCEPT();
+}
+
+void Graphics::CreateDescHeap()
+{
 	D3D12_DESCRIPTOR_HEAP_DESC rc = {};
 	rc.NumDescriptors = 2;
 	rc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	rc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
-	res = pDevice->CreateDescriptorHeap(&rc, __uuidof(ID3D12DescriptorHeap), (void**)&rtViewHeap);
-	if (FAILED(res)) {
-		throw NouException(res, __FILE__);
-	}
+	res = pDevice->CreateDescriptorHeap(&rc, __uuidof(ID3D12DescriptorHeap), (void**)& rtViewHeap);
+	CHECK_HR_EXCEPT();
+}
 
-	res = pSwap->GetBuffer(0, __uuidof(ID3D12Resource), (void**)& pBackBuffer);
-	if (FAILED(res)) {
-		throw NouException(res, __FILE__);
-	}
+void Graphics::RenderTargetShit()
+{
+	D3D12_DESCRIPTOR_HEAP_DESC rc = {};
+	rc.NumDescriptors = 2;
+	rc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
-	D3D12_CPU_DESCRIPTOR_HANDLE rtHandle = rtViewHeap->GetCPUDescriptorHandleForHeapStart();
-	//unsigned int rtSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	res = pDevice->CreateDescriptorHeap(
+		&rc,
+		__uuidof(ID3D12DescriptorHeap),
+		(void**)& rtViewHeap
+	);
+	CHECK_HR_EXCEPT();
 
-	pDevice->CreateRenderTargetView(pBackBuffer, nullptr, rtHandle);
+	D3D12_CPU_DESCRIPTOR_HANDLE rtHandle;
+	rtHandle = rtViewHeap->GetCPUDescriptorHandleForHeapStart();
 
+	unsigned int rtSize;
+	rtSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+	res = pSwap->GetBuffer(0, __uuidof(ID3D12Resource), (void**)& pBackBuffer[0]);
+	CHECK_HR_EXCEPT();
+	pDevice->CreateRenderTargetView(pBackBuffer[0].Get(), nullptr, rtHandle);
+
+	rtHandle.ptr += rtSize;
+
+	res = pSwap->GetBuffer(1, __uuidof(ID3D12Resource), (void**)& pBackBuffer[1]);
+	CHECK_HR_EXCEPT();
+	pDevice->CreateRenderTargetView(pBackBuffer[1].Get(), nullptr, rtHandle);
+
+	mBufferIndex = pSwap->GetCurrentBackBufferIndex();
+}
+
+void Graphics::CommandShit()
+{
 	res = pDevice->CreateCommandAllocator(
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
 		__uuidof(ID3D12CommandAllocator),
 		(void**)& pCmdAlloc);
+	CHECK_HR_EXCEPT();
 
-	if (FAILED(res)) {
-		throw NouException(res, __FILE__);
-	}
-	
-	
 	res = pDevice->CreateCommandList(
 		0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		pCmdAlloc,
+		pCmdAlloc.Get(),
 		nullptr,
 		__uuidof(ID3D12GraphicsCommandList),
 		(void**)& pCmdList);
-	if (FAILED(res)) {
-		throw NouException(res, __FILE__);
-	}
+	CHECK_HR_EXCEPT();
 
 	res = pCmdList->Close();
-	if (FAILED(res)) {
-		throw NouException(res, __FILE__);
-	}
+	CHECK_HR_EXCEPT();
+}
 
-	res = pDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, __uuidof(ID3D12Fence), (void**)&pFence);
-	if (FAILED(res)) {
-		throw NouException(res, __FILE__);
-	}
+void Graphics::FenceShit()
+{
+	res = pDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, __uuidof(ID3D12Fence), (void**)& pFence);
+	CHECK_HR_EXCEPT();
 
 	hFence = CreateEventEx(nullptr, FALSE, FALSE, EVENT_ALL_ACCESS);
-	if (hFence == NULL) {
-		throw NouException(__LINE__, __FILE__);
-	}
+	CHECK_HR_EXCEPT();
 
-	valFence = 1;
+	mFenceVal = 1;
 }
 
-Graphics::~Graphics()
+void Graphics::OnFrameStart()
 {
 
-	if (pDevice != nullptr)
-	{
-		pDevice->Release();
-	}
-	
-
-	if (pSwap != nullptr)
-	{
-		pSwap->Release();
-	}
-
-	if (pCommandQueue != nullptr)
-	{
-		pCommandQueue->Release();
-	}
-
-	if (rtViewHeap != nullptr)
-	{
-		rtViewHeap->Release();
-	}
-
-}
-
-void Graphics::OnFrameEnd()
-{
-	HRESULT res;
 	D3D12_RESOURCE_BARRIER barrier;
-	D3D12_CPU_DESCRIPTOR_HANDLE renderTargetViewHandle;
-	unsigned int renderTargetViewDescriptorSize;
-	float color[4];
-	ID3D12CommandList* ppCommandLists[1];
-	unsigned long long fenceToWaitFor;
-
+	D3D12_CPU_DESCRIPTOR_HANDLE rtHandle;
+	unsigned int rtSize;
 
 	res = pCmdAlloc->Reset();
-	if (FAILED(res)) {
-		throw NouException(__LINE__, __FILE__);
-	}
+	CHECK_HR_EXCEPT();
 
-	res = pCmdList->Reset(pCmdAlloc, pPipeState);
-	if (FAILED(res)) {
-		throw NouException(__LINE__, __FILE__);
-	}
-
+	res = pCmdList->Reset(pCmdAlloc.Get(), pPipeState.Get());
+	CHECK_HR_EXCEPT();
 
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = pBackBuffer;
+	barrier.Transition.pResource = pBackBuffer[mBufferIndex].Get();
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	pCmdList->ResourceBarrier(1, &barrier);
 
-	renderTargetViewHandle = rtViewHeap->GetCPUDescriptorHandleForHeapStart();
-	pCmdList->OMSetRenderTargets(1, &renderTargetViewHandle, FALSE, NULL);
+	rtHandle = rtViewHeap->GetCPUDescriptorHandleForHeapStart();
+	rtSize = pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	if (mBufferIndex == 1)
+	{
+		rtHandle.ptr += rtSize;
+	}
 
-	color[0] = 0.5;
-	color[1] = 0.5;
-	color[2] = 0.5;
-	color[3] = 1.0;
-	pCmdList->ClearRenderTargetView(renderTargetViewHandle, color, 0, NULL);
+	pCmdList->OMSetRenderTargets(1, &rtHandle, FALSE, NULL);
+
+	float color[4];
+	color[0] = 0.1f;
+	color[1] = 0.2f;
+	color[2] = 0.7f;
+	color[3] = 1.0f;
+	pCmdList->ClearRenderTargetView(rtHandle, color, 0, NULL);
 
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	pCmdList->ResourceBarrier(1, &barrier);
+}
 
-	// Close the list of commands.
+void Graphics::OnFrameEnd()
+{
+
+
+
+	ID3D12CommandList* ppCommandLists[1];
+	unsigned long long fenceToWaitFor;
+
 	res = pCmdList->Close();
-	if (FAILED(res)) {
-		throw NouException(__LINE__, __FILE__);
-	}
+	CHECK_HR_EXCEPT();
 
-	// Load the command list array (only one command list for now).
-	ppCommandLists[0] = pCmdList;
+	ppCommandLists[0] = pCmdList.Get();
 
-	// Execute the list of commands.
 	pCommandQueue->ExecuteCommandLists(1, ppCommandLists);
 
-	res = pSwap->Present(1u, 0u);
+	res = pSwap->Present(0, 0);
 	if (FAILED(res)) {
-		throw NouException(res, __FILE__);
+		if (res == DXGI_ERROR_DEVICE_REMOVED) {
+			res = pDevice->GetDeviceRemovedReason();
+		}
+		throw NouWindow::Exception(__LINE__, __FILE__, res);
 	}
 
-	// Signal and increment the fence value.
-	fenceToWaitFor = valFence;
-	res = pCommandQueue->Signal(pFence, fenceToWaitFor);
-	if (FAILED(res)) {
-		throw NouException(__LINE__, __FILE__);
-	}
-	valFence++;
+	fenceToWaitFor = mFenceVal;
+	res = pCommandQueue->Signal(pFence.Get(), fenceToWaitFor);
+	CHECK_HR_EXCEPT();
+	mFenceVal++;
 
-	// Wait until the GPU is done rendering.
 	if (pFence->GetCompletedValue() < fenceToWaitFor)
 	{
 		res = pFence->SetEventOnCompletion(fenceToWaitFor, hFence);
-		if (FAILED(res)) {
-			throw NouException(__LINE__, __FILE__);
-		}
-
+		CHECK_HR_EXCEPT();
 		WaitForSingleObject(hFence, INFINITE);
 	}
+
+	mBufferIndex == 0 ? mBufferIndex = 1 : mBufferIndex = 0;
+
 }

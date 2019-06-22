@@ -4,6 +4,7 @@
 
 #include <d3d12.h>
 #include <dxgi1_4.h>
+#include <wrl.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -14,24 +15,38 @@ public:
 	Graphics(HWND hWnd);
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;
-	~Graphics();
+	~Graphics() = default;
 
 	void OnFrameEnd();
+	void OnFrameStart();
 
 private:
+	HRESULT res;
 	ID3D12Device* pDevice = nullptr;
 	//ID3D12DeviceContext pContext = nullptr;
-	IDXGISwapChain* pSwap = nullptr;
-	ID3D12Resource* pBackBuffer = nullptr;
+	IDXGISwapChain3* pSwap = nullptr;
 	D3D12_CPU_DESCRIPTOR_HANDLE* pTarget = nullptr;
 
-	ID3D12CommandQueue* pCommandQueue = nullptr;
-	ID3D12CommandAllocator* pCmdAlloc = nullptr;
-	ID3D12GraphicsCommandList* pCmdList = nullptr;
-	ID3D12DescriptorHeap* rtViewHeap = nullptr;
-	ID3D12PipelineState* pPipeState = nullptr;
-	ID3D12Fence* pFence = nullptr;
+	void CreateSwapChain(HWND hWnd, IDXGIFactory4* pFactory);
+	void CreateCommandQueue();
+	void CreateDescHeap();
+	void RenderTargetShit();
+	void CommandShit();
+	void FenceShit();
+
+	Microsoft::WRL::ComPtr <ID3D12CommandQueue> pCommandQueue;
+	Microsoft::WRL::ComPtr <ID3D12CommandAllocator> pCmdAlloc;
+	Microsoft::WRL::ComPtr <ID3D12GraphicsCommandList> pCmdList;
+	Microsoft::WRL::ComPtr <ID3D12DescriptorHeap> rtViewHeap;
+	Microsoft::WRL::ComPtr <ID3D12Resource> pBackBuffer[2];
+	unsigned int mBufferIndex;
+
+	Microsoft::WRL::ComPtr <ID3D12PipelineState> pPipeState;
+	Microsoft::WRL::ComPtr <ID3D12Fence> pFence;
 	HANDLE hFence = nullptr;
-	unsigned long long valFence;
+	unsigned long long mFenceVal;
 	
 };
+
+
+#define CHECK_HR_EXCEPT() if(FAILED(res)) throw NouWindow::Exception( __LINE__, __FILE__, res);
