@@ -5,7 +5,6 @@ NouEngine::NouEngine()
 	window(640, 480, "NouEnginge")
 {
 
-	
 }
 
 int NouEngine::Run()
@@ -34,8 +33,9 @@ void NouEngine::ExecuteFrame()
 	static float r;
 	r += t;
 	if (r > 1) r = 0;
-	
-	g->ClearBuffer(r, 0, 0, 1);
+	g->ClearBuffer(r, 1, 0, 1);
+	g->DrawTriangle();
 
 	g->OnFrameEnd();
+	
 }

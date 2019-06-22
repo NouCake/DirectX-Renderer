@@ -5,8 +5,10 @@
 #include <d3d11.h>
 #include <dxgi1_4.h>
 #include <wrl.h>
+#include <d3dcompiler.h>
 
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "D3DCompiler.lib")
 #pragma comment(lib, "dxgi.lib")
 
 class GraphicsD11
@@ -19,6 +21,9 @@ public:
 
 	void OnFrameEnd();
 	void ClearBuffer(float r, float g, float b, float a);
+
+
+	void DrawTriangle();
 
 private:
 	HRESULT res;
