@@ -59,7 +59,7 @@ GraphicsD11::GraphicsD11(HWND hWnd)
 
 	//SET VIEWPORT
 	D3D11_VIEWPORT vp = {};
-	vp.Width = 640;
+	vp.Width = 720;
 	vp.Height = 480;
 	vp.MinDepth = 0;
 	vp.MaxDepth = 1;
@@ -90,11 +90,12 @@ void GraphicsD11::SetBuffers()
 	VertexInput vi[1024] = {
 		{{ -0.5f, 0.5f }, { 255,000,000,255 }},
 		{{  0.5f, 0.5f }, { 255,255,000,255 }},
-		{{ -0.0f,-0.5f }, { 000,255,255,255 }},
+		{{ -0.5f,-0.5f }, { 000,255,255,255 }},
+		{{  0.5f,-0.5f }, { 000,000,255,255 }},
 	};
 
 	UINT16 ind[1024] = {
-		0, 1, 2
+		0, 1, 2, 3
 	};
 
 	//Creating Vertex Buffer
@@ -136,10 +137,7 @@ void GraphicsD11::SetBuffers()
 	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	const ConstantBuffer cb = {
-		1,	0,	0,	0.25f,
-		0,	1,	0,	0,
-		0,	0,	1,	0,
-		0,	0,	0,	1
+		dx::XMMatrixIdentity()
 	};
 
 
@@ -228,6 +226,6 @@ void GraphicsD11::SetShaders(LPCWSTR pathVertex, LPCWSTR pathFragment)
 void GraphicsD11::DrawTriangle()
 {
 
-	pContext->DrawIndexed(3, 0, 0);
+	pContext->DrawIndexed(4, 0, 0);
 
 }

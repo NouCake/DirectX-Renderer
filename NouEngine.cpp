@@ -2,7 +2,7 @@
 
 NouEngine::NouEngine()
 	:
-	window(640, 480, "NouEnginge")
+	window(720.f, 480, "NouEnginge")
 {
 
 }
@@ -28,19 +28,17 @@ void NouEngine::ExecuteFrame()
 {
 	GraphicsD11* g = &window.Gfx();
 	const float t = timer.Mark();
-	static float r;
-
+	static float angle;
+	angle += t;
 	const GraphicsD11::ConstantBuffer cb = {
-		1,	0,	0,	r,
-		0,	1,	0,	0,
-		0,	0,	1,	0,
-		0,	0,	0,	1
+		DirectX::XMMatrixTranspose(
+		DirectX::XMMatrixRotationZ(angle) *
+		DirectX::XMMatrixScaling(480.f / 720.f, 1, 1)
+		)
 	};
 
 	g->UpdateGeometry(cb);
-	r += t;
-	if (r > 1) r = 0;
-	g->ClearBuffer(r, 1, 0, 1);
+	g->ClearBuffer(1, 1, 1, 1);
 	g->DrawTriangle();
 
 	g->OnFrameEnd();

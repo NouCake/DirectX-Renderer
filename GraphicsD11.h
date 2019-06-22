@@ -40,10 +40,7 @@ public:
 
 	struct ConstantBuffer
 	{
-		struct
-		{
-			float element[4][4];
-		} transformation;
+		DirectX::XMMATRIX transform;
 	};
 
 	GraphicsD11(HWND hWnd);
