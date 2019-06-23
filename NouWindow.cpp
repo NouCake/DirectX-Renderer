@@ -42,58 +42,6 @@ HINSTANCE NouWindow::WindowClass::GetInstance() noexcept
 	return wndClass.hInst;
 }
 
-// #### Exception
-
-NouWindow::Exception::Exception(int line, const char* file, HRESULT hr) noexcept
-	:
-	NouException(line, file),
-	hr(hr)
-{}
-
-std::string NouWindow::Exception::TranslateErrorCode(HRESULT hr) noexcept
-{
-	char* pMsgBuf = nullptr;
-	DWORD nMsgLen = FormatMessage(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER |
-		FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-		nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		reinterpret_cast<LPSTR>(&pMsgBuf), 0, nullptr
-	);
-	if (nMsgLen == 0)
-	{
-		return "Unidentified error code";
-	}
-	std::string errorString = pMsgBuf;
-	LocalFree(pMsgBuf);
-	return errorString;
-}
-
-const char* NouWindow::Exception::GetType() const noexcept
-{
-	return "NouWindow Exception";
-}
-
-HRESULT NouWindow::Exception::GetErrorCode() const noexcept
-{
-	return hr;
-}
-
-std::string NouWindow::Exception::GetErrorString() const noexcept
-{
-	return TranslateErrorCode(hr);
-}
-
-const char* NouWindow::Exception::what() const noexcept
-{
-	std::ostringstream oss;
-	oss << GetType() << std::endl
-		<< "[Error Code] " << GetErrorCode() << std::endl
-		<< "[Description] " << GetErrorString() << std::endl
-		<< GetOriginString();
-	whatBuffer = oss.str();
-	return whatBuffer.c_str();
-}
-
 // #### NouWindow
 
 
@@ -111,7 +59,7 @@ NouWindow::NouWindow(int width, int height, const char* name)
 	DWORD style = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
 
 	if (AdjustWindowRect(&wr, style, FALSE) == 0) {
-		throw CHWND_LAST_EXCEPT();
+		throw NOU_LAST_EXCEPT();
 	}
 
 	this->width = wr.right - wr.left;
@@ -129,7 +77,7 @@ NouWindow::NouWindow(int width, int height, const char* name)
 	);
 	if (hWnd == nullptr)
 	{
-		throw CHWND_LAST_EXCEPT();
+		throw NOU_LAST_EXCEPT();
 	}
 
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
@@ -145,7 +93,7 @@ void NouWindow::SetTitle(const char* title)
 {
 	if (SetWindowText(hWnd, title) == 0)
 	{
-		throw CHWND_LAST_EXCEPT();
+		throw NOU_LAST_EXCEPT();
 	}
 }
 

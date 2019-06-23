@@ -1,7 +1,11 @@
 #include "GraphicsD11.h"
 #include "NouWindow.h"
 
-#define CHECK_HR_EXCEPT() if(FAILED(res)) throw NouWindow::Exception( __LINE__, __FILE__, res);
+#include "FragmentShader.h"
+#include "VertexShader.h"
+#include "InputLayout.h"
+
+#include <vector>
 
 namespace dx = DirectX;
 
@@ -73,7 +77,7 @@ void GraphicsD11::OnFrameEnd()
 	res = pSwap->Present(1u, 0u);
 	if (FAILED(res)) {
 		res = pDevice->GetDeviceRemovedReason();
-		throw NouWindow::Exception(__LINE__, __FILE__, res);
+		throw NouException::HrException(__LINE__, __FILE__, res);
 	}
 }
 
@@ -87,15 +91,26 @@ void GraphicsD11::ClearBuffer(float r, float g, float b, float a)
 void GraphicsD11::SetBuffers()
 {
 	//Generating Data
-	VertexInput vi[1024] = {
-		{{ -0.5f, 0.5f }, { 255,000,000,255 }},
-		{{  0.5f, 0.5f }, { 255,255,000,255 }},
-		{{ -0.5f,-0.5f }, { 000,255,255,255 }},
-		{{  0.5f,-0.5f }, { 000,000,255,255 }},
+	VertexInput vi[512] = {
+		{{ -0.5f, 0.5f }, { 255,000,000,255 }}, //0
+		{{  0.5f, 0.5f }, { 255,255,000,255 }}, //1
+		{{ -0.5f,-0.5f }, { 255,255,000,255 }}, //2
+		{{  0.5f,-0.5f }, { 255,000,000,255 }}, //3
+
+		{{ 0.0f , 0.0f  }, { 255,255,000,255 }}, //4
+
+		{{ 0.375f, 0.375f }, { 255,255,000,255 }}, //5
+		{{ 0.000f, 0.375f  }, { 255,000,000,255 }}, //6
+
+		{{-0.375f,-0.375f }, { 255,255,000,255 }}, //7
+		{{ 0.000f,-0.375f  }, { 255,000,000,255 }}, //8
 	};
 
-	UINT16 ind[1024] = {
-		0, 1, 2, 3
+	UINT16 ind[512] = {
+		0, 1, 2,
+		1, 3, 2,
+		4, 6, 5,
+		4, 8, 7
 	};
 
 	//Creating Vertex Buffer
@@ -104,7 +119,7 @@ void GraphicsD11::SetBuffers()
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.CPUAccessFlags = 0u;
 	bd.MiscFlags = 0u;
-	bd.ByteWidth = sizeof(VertexInput) * 1024;
+	bd.ByteWidth = sizeof(VertexInput) * 512;
 	bd.StructureByteStride = sizeof(VertexInput);
 
 	D3D11_SUBRESOURCE_DATA sd = {};
@@ -123,7 +138,7 @@ void GraphicsD11::SetBuffers()
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.CPUAccessFlags = 0u;
 	bd.MiscFlags = 0u;
-	bd.ByteWidth = sizeof(UINT16) * 1024;
+	bd.ByteWidth = sizeof(UINT16) * 512;
 	bd.StructureByteStride = sizeof(UINT16);
 
 	sd = {};
@@ -134,7 +149,7 @@ void GraphicsD11::SetBuffers()
 
 	pContext->IASetIndexBuffer(pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
 
-	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	const ConstantBuffer cb = {
 		dx::XMMatrixIdentity()
@@ -176,56 +191,25 @@ void GraphicsD11::UpdateGeometry(ConstantBuffer cb)
 
 void GraphicsD11::SetShaders(LPCWSTR pathVertex, LPCWSTR pathFragment)
 {
-	//Creating PixelShader
-	Microsoft::WRL::ComPtr<ID3DBlob> pBlob;
-	res = D3DReadFileToBlob(pathFragment, &pBlob);
-	CHECK_HR_EXCEPT();
-	
-	res = pDevice->CreatePixelShader(
-		pBlob->GetBufferPointer(),
-		pBlob->GetBufferSize(),
-		nullptr,
-		&pFS);
-	CHECK_HR_EXCEPT();
 
-	//Creating Vertex Shader
-	res = D3DReadFileToBlob(L"vertex.cso", &pBlob);
-	CHECK_HR_EXCEPT();
 
-	res = pDevice->CreateVertexShader(
-		pBlob->GetBufferPointer(),
-		pBlob->GetBufferSize(),
-		nullptr,
-		&pVS);
-	CHECK_HR_EXCEPT();
+	FragmentShader fs(*this, pathFragment);
+	fs.Bind(*this);
 
-	//
-	D3D11_INPUT_ELEMENT_DESC ied[] = {
+	VertexShader vs(*this, pathVertex);
+	vs.Bind(*this);
+
+	std::vector<D3D11_INPUT_ELEMENT_DESC> ied = {
 		{"Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, sizeof(Vertex), D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
-
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> pInputLayout;
-	res = pDevice->CreateInputLayout(
-		ied,
-		2,
-		pBlob->GetBufferPointer(),
-		pBlob->GetBufferSize(),
-		&pInputLayout
-	);
-	CHECK_HR_EXCEPT();
-
-	pContext->IASetInputLayout(pInputLayout.Get());
-
-
-	//BIND SHADER
-	pContext->VSSetShader(pVS.Get(), nullptr, 0);
-	pContext->PSSetShader(pFS.Get(), nullptr, 0);
+	InputLayout il(*this, ied, vs.GetBytecode());
+	il.Bind(*this);
 }
 
 void GraphicsD11::DrawTriangle()
 {
 
-	pContext->DrawIndexed(4, 0, 0);
+	pContext->DrawIndexed(12, 0, 0);
 
 }

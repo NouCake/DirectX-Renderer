@@ -71,8 +71,5 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstBuffer;
 	UINT primitiveCount = 0;
 
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> pVS;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> pFS;
-
 };
 

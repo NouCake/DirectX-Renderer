@@ -9,7 +9,6 @@ public:
 	virtual ~Bindable() = default;
 
 protected:
-	static ID3D11Device* GetContext(GraphicsD11& gfx) noexcept;
-	static ID3D11DeviceContext* GetContextContext(GraphicsD11& gfx) noexcept;
-
+	static ID3D11Device* GetDevice(GraphicsD11& gfx) noexcept;
+	static ID3D11DeviceContext* GetContext(GraphicsD11& gfx) noexcept;
 };

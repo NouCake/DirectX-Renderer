@@ -227,7 +227,7 @@ void GraphicsD13::OnFrameEnd()
 		if (res == DXGI_ERROR_DEVICE_REMOVED) {
 			res = pDevice->GetDeviceRemovedReason();
 		}
-		throw NouWindow::Exception(__LINE__, __FILE__, res);
+		throw NouException::HrException(__LINE__, __FILE__, res);
 	}
 
 	fenceToWaitFor = mFenceVal;

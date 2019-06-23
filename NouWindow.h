@@ -7,19 +7,6 @@
 
 class NouWindow
 {
-public:
-	class Exception : public NouException
-	{
-	public:
-		Exception(int line, const char* file, HRESULT hr) noexcept;
-		const char* what() const noexcept override;
-		virtual const char* GetType() const noexcept;
-		static std::string TranslateErrorCode(HRESULT hr) noexcept;
-		HRESULT GetErrorCode() const noexcept;
-		std::string GetErrorString() const noexcept;
-	private:
-		HRESULT hr;
-	};
 
 private:
 	class WindowClass
@@ -61,6 +48,3 @@ private:
 	HWND hWnd;
 	GraphicsD11* pGfx;
 };
-
-#define CHWND_EXCEPT( hr ) NouWindow::Exception( __LINE__,__FILE__,hr )
-#define CHWND_LAST_EXCEPT() NouWindow::Exception( __LINE__,__FILE__,GetLastError() )

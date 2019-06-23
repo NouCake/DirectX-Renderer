@@ -12,7 +12,7 @@ int CALLBACK WinMain(
 	{
 		return NouEngine{}.Run();
 	}
-	catch (const NouException& e)
+	catch (const NouException::BaseException& e)
 	{
 		MessageBox(nullptr, e.what(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
 	}

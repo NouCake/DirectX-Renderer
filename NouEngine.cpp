@@ -29,7 +29,7 @@ void NouEngine::ExecuteFrame()
 	GraphicsD11* g = &window.Gfx();
 	const float t = timer.Mark();
 	static float angle;
-	angle += t;
+	angle = 45 * 3.1415f / 180;
 	const GraphicsD11::ConstantBuffer cb = {
 		DirectX::XMMatrixTranspose(
 		DirectX::XMMatrixRotationZ(angle) *

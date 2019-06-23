@@ -52,4 +52,4 @@ private:
 };
 
 
-#define CHECK_HR_EXCEPT() if(FAILED(res)) throw NouWindow::Exception( __LINE__, __FILE__, res);
+#define CHECK_HR_EXCEPT() if(FAILED(res)) throw NouException::HrException( __LINE__, __FILE__, res);
