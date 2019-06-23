@@ -19,30 +19,43 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BaseMaterial.cpp" />
     <ClCompile Include="Bindable.cpp" />
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="FragmentShader.cpp" />
     <ClCompile Include="GraphicsD11.cpp" />
     <ClCompile Include="GraphicsD13.cpp" />
+    <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayou.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NouEngine.cpp" />
     <ClCompile Include="NouException.cpp" />
     <ClCompile Include="NouTimer.cpp" />
     <ClCompile Include="NouWindow.cpp" />
+    <ClCompile Include="Topology.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseMaterial.h" />
     <ClInclude Include="Bindable.h" />
+    <ClInclude Include="ConstantBuffer.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="Drawable.h" />
     <ClInclude Include="FragmentShader.h" />
     <ClInclude Include="GraphicsD11.h" />
     <ClInclude Include="GraphicsD13.h" />
+    <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="InputLayout.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="NouEngine.h" />
     <ClInclude Include="NouException.h" />
     <ClInclude Include="NouTimer.h" />
     <ClInclude Include="NouWin.h" />
     <ClInclude Include="NouWindow.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Topology.h" />
+    <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
   </ItemGroup>
   <ItemGroup>

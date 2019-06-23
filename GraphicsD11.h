@@ -18,30 +18,6 @@ class GraphicsD11
 
 public:
 
-	struct Vertex
-	{
-		float x;
-		float y;
-		float z;
-	};
-
-	struct Color {
-		UINT8 r;
-		UINT8 g;
-		UINT8 b;
-		UINT8 a;
-	};
-
-	struct VertexInput
-	{
-		Vertex vert;
-		Color color;
-	};
-
-	struct ConstantBuffer
-	{
-		DirectX::XMMATRIX transform;
-	};
 
 	GraphicsD11(HWND hWnd);
 	GraphicsD11(const GraphicsD11&) = delete;
@@ -50,12 +26,6 @@ public:
 
 	void OnFrameEnd();
 	void ClearBuffer(float r, float g, float b, float a);
-
-	void SetBuffers();
-	void SetShaders(LPCWSTR pathVertex, LPCWSTR pathFragment);
-
-	void DrawTriangle();
-	void UpdateGeometry(ConstantBuffer cb);
 
 
 private:
@@ -66,9 +36,6 @@ private:
 	Microsoft::WRL::ComPtr <ID3D11DeviceContext> pContext;
 	Microsoft::WRL::ComPtr <ID3D11RenderTargetView> pTarget;
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pVertexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pIndexBuffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer> pConstBuffer;
 	UINT primitiveCount = 0;
 
 };
