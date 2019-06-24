@@ -1,8 +1,9 @@
 #include "Cube.h"
 
 #include "ImGUI/imgui.h"
+#include "BaseMaterial.h"
 
-Cube::Cube(GraphicsD11& gfx)
+Cube::Cube(GraphicsD11& gfx, float x, float y, float z)
 {
 	BaseMaterial::VertexInput vi[] = {
 		{ {-0.5f,	 0.5f,	 0.5f}, {255,000,000,255}, {0.0f,	0.25f}},  //0
@@ -39,7 +40,6 @@ Cube::Cube(GraphicsD11& gfx)
 		12, 13, 11
 	};
 
-	mMaterial = new BaseMaterial(gfx);
 	mVertBuf = new VertexBuffer(
 		gfx,
 		sizeof(BaseMaterial::VertexInput) * std::size(vi),
@@ -57,19 +57,12 @@ Cube::Cube(GraphicsD11& gfx)
 	tx->Bind(gfx);
 
 	mIndCount = std::size(ind);
+
+	transform = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(x, y, z));
 }
 
 void Cube::Update(float delta)
 {
-	static float t;
-	t += delta;
-	static float x = 1;
-	ImGui::SliderFloat("posX", &x, -3.0f, 3.0f);
 
-	BaseMaterial::VertexUniforms vu;
-	vu.transform = DirectX::XMMatrixRotationY(2 * t * 3.1415f * 2) * DirectX::XMMatrixRotationX(t);
-	vu.transform *= DirectX::XMMatrixTranslation(x, 0.0f, 5.0f) * DirectX::XMMatrixPerspectiveFovLH(45.0f, 720.0f / 480.0f, 0.1f, 100.f);
-	vu.transform = DirectX::XMMatrixTranspose(vu.transform);
-	((BaseMaterial*)mMaterial)->UpdateUniforms(vu);
-
+	((BaseMaterial*)mMaterial)->UpdateUniforms(this);
 }

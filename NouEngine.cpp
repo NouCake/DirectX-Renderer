@@ -60,11 +60,28 @@ void NouEngine::ExecuteFrame()
 
 	t *= speedMultiplier;
 
-	static Cube cb(*g);
+	static Cube cb(*g, -1, 0, 0);
+	static Cube cb2(*g, 1, 0, 0);
+	static bool single = true;
+	if (single)
+	{
+		single = false;
+		BaseMaterial* mat = (BaseMaterial*)malloc(sizeof(BaseMaterial));
+		BaseMaterial matty(*g);
+		memcpy(mat, &matty, sizeof(BaseMaterial));
+		cb.SetMaterial(mat);
+		cb2.SetMaterial(mat);
+	}
+
+	static float x = -1;
+	ImGui::SliderFloat("posX", &x, -3.0f, 3.0f);
+	cb2.SetPosition(x, 0, 0);
+
 	cb.Update(t);
 	cb.Draw(*g);
 
-
+	cb2.Update(t);
+	cb2.Draw(*g);
 
 
 	g->OnFrameEnd();

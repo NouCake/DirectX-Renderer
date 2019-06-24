@@ -146,9 +146,6 @@
     <ClInclude Include="ConstantBuffer.h">
       <Filter>Bindable</Filter>
     </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BaseMaterial.h">
       <Filter>Source Files\Material</Filter>
     </ClInclude>
@@ -190,6 +187,9 @@
     </ClInclude>
     <ClInclude Include="CImg\stb_image.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Source Files\Material</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

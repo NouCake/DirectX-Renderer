@@ -1,5 +1,7 @@
 #include "BaseMaterial.h"
 
+#include "ImGUI/imgui.h"
+
 BaseMaterial::BaseMaterial(GraphicsD11& gfx)
 {
 
@@ -7,8 +9,10 @@ BaseMaterial::BaseMaterial(GraphicsD11& gfx)
 	mFragShader = new FragmentShader(gfx, L"frag.cso");
 
 	mCurUniforms = {};
-	mCurUniforms.transform = DirectX::XMMatrixTranslation(0.0f, 0.0f, 1.0f) * DirectX::XMMatrixPerspectiveFovLH(45.0f, 720.0f / 480.0f, 0.1f, 100.f);
-	mCurUniforms.transform = DirectX::XMMatrixTranspose(mCurUniforms.transform);
+	mCurUniforms.WorldToView = DirectX::XMMatrixTranslation(0.0f, 0.0f, 5.0f) *  // -CamPos
+		DirectX::XMMatrixPerspectiveFovLH(45.0f, 720.0f / 480.0f, 0.1f, 100.f);  //Projection
+	mCurUniforms.WorldToView = DirectX::XMMatrixTranspose(mCurUniforms.WorldToView);
+	mCurUniforms.ObjectToWorld = DirectX::XMMatrixIdentity();
 	mVertCB = new VertexConstantBuffer(gfx, sizeof(VertexUniforms), &mCurUniforms);
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> layout = {
@@ -29,9 +33,19 @@ void BaseMaterial::Begin(GraphicsD11& gfx)
 	mVertCB->Update(gfx, sizeof(VertexUniforms), &mCurUniforms);
 }
 
-void BaseMaterial::UpdateUniforms(VertexUniforms uniform)
+void BaseMaterial::UpdateUniforms(void* d)
 {
-	mCurUniforms = uniform;
+
+	static float cam[3] = { 0, 0, 0 };
+
+	ImGui::SliderFloat("CamX", cam + 0, -30.0f, 30.0f);
+	ImGui::SliderFloat("CamY", cam + 1, -30.0f, 30.0f);
+	ImGui::SliderFloat("CamZ", cam + 2, -30.0f, 30.0f);
+
+	mCurUniforms.WorldToView = DirectX::XMMatrixTranslation(-cam[0], -cam[1], -cam[2] + 5) *  // -CamPos
+		DirectX::XMMatrixPerspectiveFovLH(45.0f, 720.0f / 480.0f, 0.1f, 100.f);  //Projection
+	mCurUniforms.WorldToView = DirectX::XMMatrixTranspose(mCurUniforms.WorldToView);
+	mCurUniforms.ObjectToWorld = ((Drawable*)d)->transform;
 }
 
 void BaseMaterial::Draw(GraphicsD11& gfx)

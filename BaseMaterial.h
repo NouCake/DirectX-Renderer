@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Material.h"
+#include "Cube.h"
 
 class BaseMaterial : public Material
 {
@@ -28,14 +29,15 @@ public:
 	};
 	struct VertexUniforms
 	{
-		DirectX::XMMATRIX transform;
+		DirectX::XMMATRIX ObjectToWorld;
+		DirectX::XMMATRIX WorldToView;
 	};
 
 	BaseMaterial(GraphicsD11& gfx);
 	~BaseMaterial() = default;
 	void Draw(GraphicsD11& gfx) override;
 	void Begin(GraphicsD11& gfx) override;
-	void UpdateUniforms(VertexUniforms uniform);
+	void UpdateUniforms(void* d);
 
 private:
 	VertexUniforms mCurUniforms;
