@@ -96,6 +96,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Bindable</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NouWin.h">
@@ -190,6 +193,9 @@
     </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>Source Files\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,6 @@
 #include "NouEngine.h"
 #include "Cube.h"
+#include "Camera.h"
 
 #ifdef USE_IMGUI
 #include "ImGUI/imgui.h"
@@ -62,9 +63,12 @@ void NouEngine::ExecuteFrame()
 
 	static Cube cb(*g, -1, 0, 0);
 	static Cube cb2(*g, 1, 0, 0);
+	static Camera cam;
 	static bool single = true;
 	if (single)
 	{
+		cam = Camera();
+		
 		single = false;
 		BaseMaterial* mat = (BaseMaterial*)malloc(sizeof(BaseMaterial));
 		BaseMaterial matty(*g);
@@ -72,6 +76,7 @@ void NouEngine::ExecuteFrame()
 		cb.SetMaterial(mat);
 		cb2.SetMaterial(mat);
 	}
+	cam.SpawnImGuiControl();
 
 	static float x = -1;
 	ImGui::SliderFloat("posX", &x, -3.0f, 3.0f);

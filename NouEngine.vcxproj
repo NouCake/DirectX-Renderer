@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="BaseMaterial.cpp" />
     <ClCompile Include="Bindable.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="FragmentShader.cpp" />
     <ClCompile Include="GraphicsD11.cpp" />
@@ -46,6 +47,7 @@
   <ItemGroup>
     <ClInclude Include="BaseMaterial.h" />
     <ClInclude Include="Bindable.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CImg\stb_image.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="Cube.h" />
