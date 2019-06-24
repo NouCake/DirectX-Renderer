@@ -1,9 +1,17 @@
 #include "GraphicsD11.h"
 #include "NouWindow.h"
 
+#include "BaseMaterial.h"
+#include "Cube.h"
+
+#ifdef USE_IMGUI
+#include "ImGUI/imgui.h"
+#include "ImGUI/imgui_impl_dx11.h"
+#include "ImGUI/imgui_impl_win32.h"
+#endif
+
 
 #include <vector>
-
 namespace dx = DirectX;
 
 GraphicsD11::GraphicsD11(HWND hWnd)
@@ -63,10 +71,23 @@ GraphicsD11::GraphicsD11(HWND hWnd)
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	pContext->RSSetViewports(1u, &vp);
+
+#ifdef USE_IMGUI
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(hWnd);
+	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
+#endif
 }
 
 void GraphicsD11::OnFrameEnd()
 {
+#ifdef USE_IMGUI
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+#endif
 	res = pSwap->Present(1u, 0u);
 	if (FAILED(res)) {
 		res = pDevice->GetDeviceRemovedReason();
@@ -81,26 +102,7 @@ void GraphicsD11::ClearBuffer(float r, float g, float b, float a)
 	pContext->ClearRenderTargetView(pTarget.Get(), color);
 }
 
-/*
-VertexInput vi[512] = {
-	{{ -0.5f, 0.5f }, { 255,000,000,255 }},		//0
-	{{  0.5f, 0.5f }, { 255,255,000,255 }},		//1
-	{{ -0.5f,-0.5f }, { 255,255,000,255 }},		//2
-	{{  0.5f,-0.5f }, { 255,000,000,255 }},		//3
-
-	{{ 0.0f , 0.0f  }, { 255,255,000,255 }},	//4
-
-	{{ 0.375f, 0.375f }, { 255,255,000,255 }},	//5
-	{{ 0.000f, 0.375f  }, { 255,000,000,255 }}, //6
-
-	{{-0.375f,-0.375f }, { 255,255,000,255 }},	//7
-	{{ 0.000f,-0.375f  }, { 255,000,000,255 }}, //8
-};
-
-UINT16 ind[512] = {
-	0, 1, 2,
-	1, 3, 2,
-	4, 6, 5,
-	4, 8, 7
-};
-*/
+void GraphicsD11::DrawIndexed(UINT count)
+{
+	pContext->DrawIndexed(count, 0u, 0u);
+}

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "settings.h"
+
 #include "NouWindow.h"
 #include "NouTimer.h"
 

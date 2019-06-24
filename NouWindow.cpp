@@ -1,6 +1,11 @@
 #include "NouWindow.h"
 #include "resource.h"
 
+#ifdef USE_IMGUI
+#include "ImGUI/imgui.h"
+#include "ImGUI/imgui_impl_win32.h"
+#endif
+
 #include <sstream>
 
 NouWindow::WindowClass NouWindow::WindowClass::wndClass;
@@ -24,6 +29,7 @@ NouWindow::WindowClass::WindowClass() noexcept
 	wc.lpszClassName = GetName();
 
 	RegisterClassEx(&wc);
+
 }
 
 
@@ -82,6 +88,7 @@ NouWindow::NouWindow(int width, int height, const char* name)
 
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
 	pGfx = new GraphicsD11(hWnd);
+
 
 }
 
@@ -142,15 +149,21 @@ LRESULT CALLBACK NouWindow::HandleMsgThunk(HWND hWnd, UINT msg, WPARAM wParam, L
 	NouWindow* window = reinterpret_cast<NouWindow*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 	return window->HandleMsg(hWnd, msg, wParam, lParam);
 }
-
+#ifdef USE_IMGUI
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif
 LRESULT NouWindow::HandleMsg(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
+#ifdef USE_IMGUI
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+		return true;
+#endif
+
 	switch (msg) {
 		case WM_CLOSE:
 			PostQuitMessage(0);
 			return 0;
 	}
-	
 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }

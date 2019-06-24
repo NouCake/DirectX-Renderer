@@ -13,16 +13,13 @@
 #define NOMENUS
 #define NOICONS
 #define NOSYSCOMMANDS
-#define NORASTEROPS
 #define OEMRESOURCE
 #define NOATOM
 #define NOCLIPBOARD
 #define NOCOLOR
-#define NOCTLMGR
+#define NOMEMMGR
 #define NODRAWTEXT
 #define NOKERNEL
-#define NONLS
-#define NOMEMMGR
 #define NOMETAFILE
 #define NOOPENFILE
 #define NOSCROLL
@@ -40,6 +37,11 @@
 #define NOPROXYSTUB
 #define NOIMAGE
 #define NOTAPE
+
+//CIMG does not like
+//#define NORASTEROPS
+//#define NOCTLMGR
+//#define NONLS
 #endif
 
 #define NOMINMAX

@@ -1,5 +1,8 @@
+#define USE_IMGUI
+
 #include "NouEngine.h"
 #include "NouException.h"
+
 
 int CALLBACK WinMain(
 	HINSTANCE hInstance,

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "settings.h"
 #include "NouWin.h"
 
 #include <d3d11.h>
@@ -26,6 +27,7 @@ public:
 
 	void OnFrameEnd();
 	void ClearBuffer(float r, float g, float b, float a);
+	void DrawIndexed(UINT count);
 
 
 private:

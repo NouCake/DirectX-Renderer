@@ -1,4 +1,5 @@
 #pragma once
+#include "settings.h"
 
 #include "NouWin.h"
 #include "NouException.h"
