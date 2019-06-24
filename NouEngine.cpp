@@ -51,43 +51,21 @@ void NouEngine::ExecuteFrame()
 	GraphicsD11* g = &window.Gfx();
 	g->ClearBuffer(0.2f, 0.2f, 1, 1);
 
-	static float speedMultiplier = 0.0f;
-
 #ifdef USE_IMGUI
+	static float speedMultiplier = 0.0f;
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	ImGui::SliderFloat("speed", &speedMultiplier, 0.0f, 2.0f);
+	t *= speedMultiplier;
 #endif
 
-
-	t *= speedMultiplier;
-
-	static Cube cb(*g, -1, 0, 0);
-	static Cube cb2(*g, 1, 0, 0);
 	static Camera cam;
 	static bool single = true;
 	if (single)
 	{
-		cam = Camera();
-		
 		single = false;
-		BaseMaterial* mat = (BaseMaterial*)malloc(sizeof(BaseMaterial));
-		BaseMaterial matty(*g);
-		memcpy(mat, &matty, sizeof(BaseMaterial));
-		cb.SetMaterial(mat);
-		cb2.SetMaterial(mat);
+		cam = Camera();
 	}
 	cam.SpawnImGuiControl();
-
-	static float x = -1;
-	ImGui::SliderFloat("posX", &x, -3.0f, 3.0f);
-	cb2.SetPosition(x, 0, 0);
-
-	cb.Update(t);
-	cb.Draw(*g);
-
-	cb2.Update(t);
-	cb2.Draw(*g);
-
 
 	g->OnFrameEnd();
 	

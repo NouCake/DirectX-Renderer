@@ -10,17 +10,6 @@
 class Drawable
 {
 public:
-	void Draw(GraphicsD11& gfx)
-	{
-		mMaterial->Begin(gfx);
-		
-
-		mTopo->Bind(gfx);
-		mVertBuf->Bind(gfx);
-		mIndBuf->Bind(gfx);
-
-		gfx.DrawIndexed(mIndCount);
-	}
 
 	void SetMaterial(Material* mat)
 	{

@@ -36,7 +36,7 @@ public:
 	BaseMaterial(GraphicsD11& gfx);
 	~BaseMaterial() = default;
 	void Draw(GraphicsD11& gfx) override;
-	void Begin(GraphicsD11& gfx) override;
+	void Begin(GraphicsD11& gfx, Camera& cam) override;
 	void UpdateUniforms(void* d);
 
 private:

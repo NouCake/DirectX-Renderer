@@ -23,13 +23,14 @@ BaseMaterial::BaseMaterial(GraphicsD11& gfx)
 	mInputLayout = new InputLayout(gfx, layout, mVertShader->GetBytecode());
 }
 
-void BaseMaterial::Begin(GraphicsD11& gfx)
+void BaseMaterial::Begin(GraphicsD11& gfx, Camera& cam)
 {
 	mFragShader->Bind(gfx);
 	mVertShader->Bind(gfx);
 	mInputLayout->Bind(gfx);
 	mVertCB->Bind(gfx);
 
+	mCurUniforms.WorldToView = cam.GetMatrix();
 	mVertCB->Update(gfx, sizeof(VertexUniforms), &mCurUniforms);
 }
 
