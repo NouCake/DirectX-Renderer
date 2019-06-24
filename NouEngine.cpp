@@ -1,6 +1,8 @@
 #include "NouEngine.h"
+
 #include "Cube.h"
 #include "Camera.h"
+#include "BaseMaterial.h"
 
 #ifdef USE_IMGUI
 #include "ImGUI/imgui.h"
@@ -58,14 +60,14 @@ void NouEngine::ExecuteFrame()
 	t *= speedMultiplier;
 #endif
 
-	static Camera cam;
-	static bool single = true;
-	if (single)
-	{
-		single = false;
-		cam = Camera();
-	}
-	cam.SpawnImGuiControl();
+	static Camera* cam = new Camera();
+	static Cube* cube = new Cube(*g);
+	static BaseMaterial* mat = new BaseMaterial(*g);
+	
+	cam->SpawnImGuiControl();
+
+	mat->Begin(*g, *cam);
+	mat->Draw(*g, *cube);
 
 	g->OnFrameEnd();
 	

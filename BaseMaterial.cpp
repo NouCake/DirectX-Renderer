@@ -31,24 +31,17 @@ void BaseMaterial::Begin(GraphicsD11& gfx, Camera& cam)
 	mVertCB->Bind(gfx);
 
 	mCurUniforms.WorldToView = cam.GetMatrix();
+}
+
+void BaseMaterial::UpdateUniforms(GraphicsD11& gfx, Renderable& rend)
+{
+	mCurUniforms.ObjectToWorld = rend.ObjectToWorld;
 	mVertCB->Update(gfx, sizeof(VertexUniforms), &mCurUniforms);
 }
 
-void BaseMaterial::UpdateUniforms(void* d)
+void BaseMaterial::Draw(GraphicsD11& gfx, Renderable& rend)
 {
-
-	static float cam[3] = { 0, 0, 0 };
-
-	ImGui::SliderFloat("CamX", cam + 0, -30.0f, 30.0f);
-	ImGui::SliderFloat("CamY", cam + 1, -30.0f, 30.0f);
-	ImGui::SliderFloat("CamZ", cam + 2, -30.0f, 30.0f);
-
-	mCurUniforms.WorldToView = DirectX::XMMatrixTranslation(-cam[0], -cam[1], -cam[2] + 5) *  // -CamPos
-		DirectX::XMMatrixPerspectiveFovLH(45.0f, 720.0f / 480.0f, 0.1f, 100.f);  //Projection
-	mCurUniforms.WorldToView = DirectX::XMMatrixTranspose(mCurUniforms.WorldToView);
-	mCurUniforms.ObjectToWorld = ((Drawable*)d)->transform;
-}
-
-void BaseMaterial::Draw(GraphicsD11& gfx)
-{
+	UpdateUniforms(gfx, rend);
+	rend.Bind(gfx);
+	gfx.DrawIndexed(rend.GetIndCount());
 }

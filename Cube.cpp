@@ -3,7 +3,7 @@
 #include "ImGUI/imgui.h"
 #include "BaseMaterial.h"
 
-Cube::Cube(GraphicsD11& gfx, float x, float y, float z)
+Cube::Cube(GraphicsD11& gfx)
 {
 	BaseMaterial::VertexInput vi[] = {
 		{ {-0.5f,	 0.5f,	 0.5f}, {255,000,000,255}, {0.0f,	0.25f}},  //0
@@ -58,11 +58,5 @@ Cube::Cube(GraphicsD11& gfx, float x, float y, float z)
 
 	mIndCount = std::size(ind);
 
-	transform = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(x, y, z));
-}
-
-void Cube::Update(float delta)
-{
-
-	((BaseMaterial*)mMaterial)->UpdateUniforms(this);
+	ObjectToWorld = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0, 0, 0));
 }

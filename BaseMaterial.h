@@ -35,9 +35,9 @@ public:
 
 	BaseMaterial(GraphicsD11& gfx);
 	~BaseMaterial() = default;
-	void Draw(GraphicsD11& gfx) override;
+	void Draw(GraphicsD11& gfx, Renderable& rend) override;
 	void Begin(GraphicsD11& gfx, Camera& cam) override;
-	void UpdateUniforms(void* d);
+	void UpdateUniforms(GraphicsD11& gfx, Renderable& rend);
 
 private:
 	VertexUniforms mCurUniforms;

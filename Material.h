@@ -5,12 +5,13 @@
 #include "VertexShader.h"
 #include "InputLayout.h"
 #include "ConstantBuffer.h"
+#include "Renderable.h"
 
 class Material
 {
 public:
 	~Material() = default;
-	virtual void Draw(GraphicsD11& gfx) = 0;
+	virtual void Draw(GraphicsD11& gfx, Renderable& rend) = 0;
 	virtual void Begin(GraphicsD11& gfx, Camera& cam) = 0;
 protected:
 	VertexShader* mVertShader = nullptr;

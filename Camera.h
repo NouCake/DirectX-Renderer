@@ -23,8 +23,14 @@ public:
 	void SpawnImGuiControl()
 	{
 		ImGui::Begin("Camera");
-		ImGui::InputFloat3("Position", pos.m128_f32, 1, 0);
-		ImGui::InputFloat3("Rotation", rot.m128_f32, 1, 0);
+		if (ImGui::SliderFloat3("Position", pos.m128_f32, -10, 10))
+		{
+			dirty = true;
+		}
+		if (ImGui::SliderFloat3("Rotation", rot.m128_f32, -180, 180))
+		{
+			dirty = true;
+		}
 		ImGui::End();
 	}
 #endif
@@ -46,8 +52,8 @@ private:
 	{
 		dirty = false;
 		matrix = dx::XMMatrixTranspose(
-			dx::XMMatrixRotationRollPitchYawFromVector(dx::XMVectorScale(rot, -1)) *
-			dx::XMMatrixTranslationFromVector(dx::XMVectorScale(pos , -1)) *
+			dx::XMMatrixTranslationFromVector(dx::XMVectorScale(pos, -1)) *
+			dx::XMMatrixRotationRollPitchYawFromVector(dx::XMVectorScale(rot, -1 * 3.1415f / 180.0f)) *
 			dx::XMMatrixPerspectiveFovLH(mAngle, mAspectRation, mNear, mFar)
 		);
 	}

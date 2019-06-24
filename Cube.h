@@ -1,14 +1,13 @@
 #pragma once
 
-#include "Drawable.h"
+#include "Renderable.h"
 #include "Texture.h"
 
-class Cube : public Drawable
+class Cube : public Renderable
 {
 public:
-	Cube(GraphicsD11& gfx, float x, float y, float z);
+	Cube(GraphicsD11& gfx);
 	~Cube() = default;
-	void Update(float delta);
 
 private:
 	Texture* tx;
