@@ -4,11 +4,19 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "CImg/stb_image.h"
 
-Texture::Texture(GraphicsD11& gfx)
+Texture::Texture(GraphicsD11& gfx, std::string path)
 {
 	int width, height, channels;
 
-	unsigned char* imgdata = stbi_load("cube.png", &width, &height, &channels, STBI_rgb_alpha);
+	unsigned char* imgdata = stbi_load(path.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+	if (imgdata == nullptr)
+	{
+		throw NouException::BaseException(__LINE__, __FILE__, "Could not find file : " + path);
+		width = 1;
+		height = 1;
+		unsigned char data[] = { 255, 0, 255, 255 };
+		imgdata = data;
+	}
 
 	D3D11_TEXTURE2D_DESC td = {};
 	td.Width = width;
@@ -32,7 +40,7 @@ Texture::Texture(GraphicsD11& gfx)
 	);
 	CHECK_HR_EXCEPT();
 
-	stbi_image_free(imgdata);
+	//stbi_image_free(imgdata);
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC vd = {};
 	vd.Format = td.Format;

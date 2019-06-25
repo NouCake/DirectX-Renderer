@@ -12,6 +12,7 @@ public:
 	{
 	public:
 		BaseException(int line, const char* file) noexcept;
+		BaseException(int line, const char* file, std::string text) noexcept;
 		const char* what() const noexcept override;
 		virtual const char* GetType() const noexcept;
 
@@ -22,6 +23,7 @@ public:
 	private:
 		int line;
 		std::string file;
+		std::string text;
 
 	protected:
 		mutable std::string whatBuffer;

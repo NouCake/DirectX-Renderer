@@ -53,7 +53,7 @@ Cube::Cube(GraphicsD11& gfx)
 	);
 	mTopo = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	tx = new Texture(gfx);
+	tx = new Texture(gfx, "cube.png");
 	tx->Bind(gfx);
 
 	mIndCount = std::size(ind);

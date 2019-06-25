@@ -7,7 +7,17 @@
 NouException::BaseException::BaseException(int line, const char* file) noexcept
 	:
 	line(line),
-	file(file)
+	file(file),
+	text("None")
+{
+
+}
+
+NouException::BaseException::BaseException(int line, const char* file, std::string text) noexcept
+	:
+	line(line),
+	file(file),
+	text(text)
 {
 
 }
@@ -39,7 +49,8 @@ const std::string& NouException::BaseException::GetFile() const noexcept
 std::string NouException::BaseException::GetOriginString() const noexcept
 {
 	std::ostringstream oss;
-	oss << "[File] " << file << std::endl
+	oss << "[Text] " << text << std::endl
+		<< "[File] " << file << std::endl
 		<< "[Line] " << line;
 	return oss.str();
 }
