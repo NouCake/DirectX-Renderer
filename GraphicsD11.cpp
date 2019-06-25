@@ -111,7 +111,7 @@ GraphicsD11::GraphicsD11(HWND hWnd)
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.IniFilename = "ImGUI/ imgui.ini";
+	io.IniFilename = "ImGUI/imgui.ini";
 	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(hWnd);
 	ImGui_ImplDX11_Init(pDevice.Get(), pContext.Get());
