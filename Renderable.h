@@ -10,7 +10,7 @@ class Renderable
 {
 public:
 
-	void Bind(GraphicsD11& gfx)
+	virtual void Bind(GraphicsD11& gfx)
 	{
 		mVertBuf->Bind(gfx);
 		mIndBuf->Bind(gfx);

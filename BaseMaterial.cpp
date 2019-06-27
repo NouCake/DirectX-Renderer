@@ -38,7 +38,7 @@ void BaseMaterial::UpdateUniforms(GraphicsD11& gfx, Renderable& rend)
 {
 	Transform t = *rend.transform;
 
-	mCurUniforms.ObjectToWorld = dx::XMMatrixTranspose(t.GetLocalTransform());
+	mCurUniforms.ObjectToWorld = dx::XMMatrixIdentity();
 	mVertCB->Update(gfx, sizeof(VertexUniforms), &mCurUniforms);
 }
 

@@ -12,6 +12,8 @@ public:
 	Cube(GraphicsD11& gfx);
 	~Cube() = default;
 
+	void Bind(GraphicsD11& gfx) override;
+
 #ifdef USE_IMGUI
 	void SpawnImGuiControl(std::string name)
 	{
@@ -43,5 +45,5 @@ public:
 #endif
 
 private:
-	Texture* tx;
+	Texture* mTexture;
 };

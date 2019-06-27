@@ -11,7 +11,7 @@ class Transform
 public:
 	Transform();
 
-	void print();
+	//void print();
 	void SetPosition(dx::XMVECTOR pos);
 	void SetRotation(dx::XMVECTOR rotationQuat);
 	void RotateLocal(dx::XMVECTOR rotationQuat);

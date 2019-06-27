@@ -1,10 +1,16 @@
 #pragma once
 
 #include "Renderable.h"
+#include "Texture.h"
 
 class Mesh : public Renderable
 {
 public:
-	Mesh();
-	~Mesh();
+	Mesh(GraphicsD11& gfx, std::string path, int index);
+	~Mesh() = default;
+
+	void Bind(GraphicsD11& gfx) override;
+
+private:
+	Texture* mTexture;
 };

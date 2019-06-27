@@ -1,11 +1,93 @@
 #include "Mesh.h"
 
+#include "NouException.h"
+#include "BaseMaterial.h"
+
+#include <vector>
+
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <assimp/scene.h>
 
-Mesh::Mesh()
+#include <iostream>
+
+Mesh::Mesh(GraphicsD11& gfx, std::string path, int index)
 {
 	Assimp::Importer imp;
-	imp.ReadFile("sponza/sponza.obj",
+	const auto sponzaScene = imp.ReadFile(path,
 		aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+	
+	if (sponzaScene == nullptr)
+	{
+		throw NouException::BaseException(__LINE__, __FILE__, "could not find File " + path);
+	}
+
+	const aiMesh* sponzaMesh = sponzaScene->mMeshes[index];
+	float scale = 0.01f;
+
+
+	std::vector<BaseMaterial::VertexInput> verts;
+	verts.reserve(sponzaMesh->mNumVertices);
+	for (unsigned int i = 0; i < sponzaMesh->mNumVertices; i++)
+	{
+		BaseMaterial::VertexInput vi = {};
+		vi.vertex = {
+			sponzaMesh->mVertices[i].x * scale,
+			sponzaMesh->mVertices[i].y * scale,
+			sponzaMesh->mVertices[i].z * scale
+		};
+		//throw NouException::BaseException(__LINE__, __FILE__, "Vert " + std::to_string(vi.vertex.x) + " " + std::to_string(vi.vertex.y) + " " + std::to_string(vi.vertex.z));
+		vi.color = { 255, 255, 255, 255 };
+		vi.uv = { 0.0f, 0.0f };
+		if (sponzaMesh->HasTextureCoords(0))
+		{
+			const auto tv = sponzaMesh->mTextureCoords[0][i];
+			vi.uv.u = tv.x;
+			vi.uv.v = tv.y;
+		}
+
+		verts.push_back(vi);
+	}
+
+	std::vector<UINT16> ind;
+	ind.reserve(sponzaMesh->mNumFaces);
+	for (unsigned int i = 0; i < sponzaMesh->mNumFaces; i++)
+	{
+		const auto& face = sponzaMesh->mFaces[i];
+		assert(face.mNumIndices == 3);
+		ind.push_back(face.mIndices[0]);
+		ind.push_back(face.mIndices[1]);
+		ind.push_back(face.mIndices[2]);
+	}
+
+
+	mVertBuf = new VertexBuffer(
+		gfx,
+		sizeof(BaseMaterial::VertexInput) * sponzaMesh->mNumVertices,
+		sizeof(BaseMaterial::VertexInput),
+		&verts[0]
+	);
+	mIndBuf = new IndexBuffer(
+		gfx,
+		sponzaMesh->mNumFaces*3,
+		&ind[0]
+	);
+	mTopo = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	int indindex = sponzaMesh->mMaterialIndex;
+	auto mat = sponzaScene->mTextures[0];
+
+
+	mTexture = new Texture(gfx, "sponza/textures/vase_plant.png");
+
+	mIndCount = sponzaMesh->mNumFaces;
+
+}
+
+void Mesh::Bind(GraphicsD11& gfx)
+{
+	mVertBuf->Bind(gfx);
+	mIndBuf->Bind(gfx);
+	mTopo->Bind(gfx);
+	mTexture->Bind(gfx);
 }

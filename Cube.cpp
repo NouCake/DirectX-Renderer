@@ -23,7 +23,7 @@ Cube::Cube(GraphicsD11& gfx)
 	};
 
 	UINT16 ind[] = {
-		
+
 		0, 3, 1,
 		3, 4, 1,
 		2, 6, 3,
@@ -53,8 +53,17 @@ Cube::Cube(GraphicsD11& gfx)
 	);
 	mTopo = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	tx = new Texture(gfx, "cube.png");
-	tx->Bind(gfx);
+	mTexture = new Texture(gfx, "cube.png");
 
 	mIndCount = std::size(ind);
+
+	mTransform.SetPosition({ 1.0f, 0.0f, 0.0f, 0.0f });
+}
+
+void Cube::Bind(GraphicsD11& gfx)
+{
+	mVertBuf->Bind(gfx);
+	mIndBuf->Bind(gfx);
+	mTopo->Bind(gfx);
+	mTexture->Bind(gfx);
 }

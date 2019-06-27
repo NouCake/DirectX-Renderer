@@ -7,6 +7,7 @@ Transform::Transform()
 	dx::XMMatrixDecompose(&scale, &rotationQuat, &position, localTransform);
 }
 
+/*
 void Transform::print()
 {
 	dx::XMMatrixDecompose(&scale, &rotationQuat, &position, localTransform);
@@ -15,6 +16,7 @@ void Transform::print()
 	std::cout << "Scale:  \t(\t" << scale.m128_f32[0] << ", \t" << scale.m128_f32[1] << ", \t" << scale.m128_f32[2] << ", \t" << scale.m128_f32[3] << ")" << std::endl;
 	std::cout << std::endl;
 }
+*/
 
 void Transform::SetPosition(dx::XMVECTOR pos)
 {

@@ -95,9 +95,6 @@ GraphicsD11::GraphicsD11(HWND hWnd)
 	);
 	CHECK_HR_EXCEPT();
 
-	// bind depth stensil view to OM
-	pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), pDSV.Get());
-	//SET VIEWPORT
 	D3D11_VIEWPORT vp = {};
 	vp.Width = 720;
 	vp.Height = 480;
@@ -106,6 +103,8 @@ GraphicsD11::GraphicsD11(HWND hWnd)
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	pContext->RSSetViewports(1u, &vp);
+
+	pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), nullptr);
 
 #ifdef USE_IMGUI
 	IMGUI_CHECKVERSION();

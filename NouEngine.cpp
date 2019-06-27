@@ -3,6 +3,7 @@
 #include "Cube.h"
 #include "Camera.h"
 #include "BaseMaterial.h"
+#include "Mesh.h"
 
 #ifdef USE_IMGUI
 #include "ImGUI/imgui.h"
@@ -64,14 +65,28 @@ void NouEngine::ExecuteFrame()
 	static Cube* cube = new Cube(*g);
 	static Cube* cube2 = new Cube(*g);
 	static BaseMaterial* mat = new BaseMaterial(*g);
+	static std::vector<Mesh> meshes;
+	static bool init;
+	if (!init)
+	{
+		init = true;
+		for (int i = 0; i < 1; i++)
+		{
+			meshes.push_back(Mesh(*g, "sponza/sponza.obj", i));
+		}
+	}
 	
 	cam->SpawnImGuiControl();
-	cube->SpawnImGuiControl("Cube1");
-	cube2->SpawnImGuiControl("Cube2");
+	//cube->SpawnImGuiControl("Cube1");
+	//cube2->SpawnImGuiControl("Cube2");
 
 	mat->Begin(*g, *cam);
-	mat->Draw(*g, *cube);
-	mat->Draw(*g, *cube2);
+	//mat->Draw(*g, *cube);
+	//mat->Draw(*g, *cube2);
+	for (int i = 0; i < meshes.size(); i++)
+	{
+		mat->Draw(*g, meshes[i]);
+	}
 
 	g->OnFrameEnd();
 	
