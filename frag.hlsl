@@ -11,5 +11,6 @@ SamplerState splr;
 
 float4 main(v2f input) : SV_TARGET
 {
-	return tex.Sample(splr, input.uv);
+	float4 col =  tex.Sample(splr, input.uv);
+	return col;
 }

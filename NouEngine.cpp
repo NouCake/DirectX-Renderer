@@ -4,6 +4,11 @@
 #include "Camera.h"
 #include "BaseMaterial.h"
 #include "Mesh.h"
+#include "TextureLoader.h"
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #ifdef USE_IMGUI
 #include "ImGUI/imgui.h"
@@ -69,10 +74,21 @@ void NouEngine::ExecuteFrame()
 	static bool init;
 	if (!init)
 	{
-		init = true;
-		for (int i = 0; i < 1; i++)
+		Assimp::Importer imp;
+		std::string path = "sponza/sponza.obj";
+		const aiScene* sponzaScene = imp.ReadFile(path,
+			aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+
+		if (sponzaScene == nullptr)
 		{
-			meshes.push_back(Mesh(*g, "sponza/sponza.obj", i));
+			throw NouException::BaseException(__LINE__, __FILE__, "could not find File " + path);
+		}
+		init = true;
+
+		TextureLoader tl = TextureLoader();
+		for (int i = 0; i < sponzaScene->mNumMeshes; i++)
+		{
+			meshes.push_back(Mesh(*g, sponzaScene, i, tl));
 		}
 	}
 	

@@ -5,22 +5,11 @@
 
 #include <vector>
 
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
-
 #include <iostream>
 
-Mesh::Mesh(GraphicsD11& gfx, std::string path, int index)
+Mesh::Mesh(GraphicsD11& gfx, const aiScene* sponzaScene, int index, TextureLoader& loader)
 {
-	Assimp::Importer imp;
-	const auto sponzaScene = imp.ReadFile(path,
-		aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 	
-	if (sponzaScene == nullptr)
-	{
-		throw NouException::BaseException(__LINE__, __FILE__, "could not find File " + path);
-	}
 
 	const aiMesh* sponzaMesh = sponzaScene->mMeshes[index];
 	float scale = 0.01f;
@@ -74,13 +63,20 @@ Mesh::Mesh(GraphicsD11& gfx, std::string path, int index)
 	);
 	mTopo = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	int indindex = sponzaMesh->mMaterialIndex;
-	auto mat = sponzaScene->mTextures[0];
 
-
-	mTexture = new Texture(gfx, "sponza/textures/vase_plant.png");
+	int matIndex = sponzaMesh->mMaterialIndex;
+	auto mat = sponzaScene->mMaterials[matIndex];
+	if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0)
+	{
+		aiString astr;
+		auto may = mat->GetTexture(aiTextureType_DIFFUSE, 0, &astr);
+		mTexture = loader.GetTexture(gfx, "sponza/" + std::string(astr.C_Str()));
+	}
 
 	mIndCount = sponzaMesh->mNumFaces;
+
+	verts.clear();
+	ind.clear();
 
 }
 
@@ -89,5 +85,9 @@ void Mesh::Bind(GraphicsD11& gfx)
 	mVertBuf->Bind(gfx);
 	mIndBuf->Bind(gfx);
 	mTopo->Bind(gfx);
-	mTexture->Bind(gfx);
+	if (this->mTexture != nullptr && this->mTexture != (Texture*)0xFFFFFFFFFFFFFFFF) {
+
+		this->mTexture->Bind(gfx);
+
+	}
 }

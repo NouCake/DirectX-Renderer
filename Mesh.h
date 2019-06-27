@@ -2,11 +2,16 @@
 
 #include "Renderable.h"
 #include "Texture.h"
+#include "TextureLoader.h"
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 class Mesh : public Renderable
 {
 public:
-	Mesh(GraphicsD11& gfx, std::string path, int index);
+	Mesh(GraphicsD11& gfx, const aiScene* sponzaScene, int index, TextureLoader& loader);
 	~Mesh() = default;
 
 	void Bind(GraphicsD11& gfx) override;
