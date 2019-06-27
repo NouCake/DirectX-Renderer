@@ -3,6 +3,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Topology.h"
+#include "Transform.h"
 
 
 class Renderable 
@@ -16,20 +17,12 @@ public:
 		mTopo->Bind(gfx);
 	}
 
-	void SetPosition(float x, float y, float z)
-	{
-		ObjectToWorld.r[0].m128_f32[3] = x;
-		ObjectToWorld.r[1].m128_f32[3] = y;
-		ObjectToWorld.r[2].m128_f32[3] = z;
-	}
-
-
 	UINT GetIndCount()
 	{
 		return mIndCount;
 	}
 
-	DirectX::XMMATRIX ObjectToWorld;
+	const Transform* transform = &mTransform;
 
 protected:
 	VertexBuffer* mVertBuf;
@@ -37,4 +30,5 @@ protected:
 	Topology* mTopo;
 
 	UINT mIndCount;
+	Transform mTransform;
 };

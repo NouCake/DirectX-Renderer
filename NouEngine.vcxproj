@@ -41,6 +41,7 @@
     <ClCompile Include="NouWindow.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Topology.cpp" />
+    <ClCompile Include="Transform.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
   </ItemGroup>
@@ -75,6 +76,7 @@
     <ClInclude Include="settings.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Topology.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
   </ItemGroup>

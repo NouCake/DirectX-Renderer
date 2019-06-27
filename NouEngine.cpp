@@ -62,12 +62,16 @@ void NouEngine::ExecuteFrame()
 
 	static Camera* cam = new Camera();
 	static Cube* cube = new Cube(*g);
+	static Cube* cube2 = new Cube(*g);
 	static BaseMaterial* mat = new BaseMaterial(*g);
 	
 	cam->SpawnImGuiControl();
+	cube->SpawnImGuiControl("Cube1");
+	cube2->SpawnImGuiControl("Cube2");
 
 	mat->Begin(*g, *cam);
 	mat->Draw(*g, *cube);
+	mat->Draw(*g, *cube2);
 
 	g->OnFrameEnd();
 	

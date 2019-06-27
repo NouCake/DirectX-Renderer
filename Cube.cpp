@@ -57,6 +57,4 @@ Cube::Cube(GraphicsD11& gfx)
 	tx->Bind(gfx);
 
 	mIndCount = std::size(ind);
-
-	ObjectToWorld = DirectX::XMMatrixTranspose(DirectX::XMMatrixTranslation(0, 0, 0));
 }

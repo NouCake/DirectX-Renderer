@@ -99,6 +99,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NouWin.h">
@@ -152,9 +155,6 @@
     <ClInclude Include="BaseMaterial.h">
       <Filter>Source Files\Material</Filter>
     </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="ImGUI\imgui_internal.h">
       <Filter>ImGUI</Filter>
     </ClInclude>
@@ -179,9 +179,6 @@
     <ClInclude Include="ImGUI\imgui_impl_win32.h">
       <Filter>ImGUI</Filter>
     </ClInclude>
-    <ClInclude Include="settings.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Bindable</Filter>
     </ClInclude>
@@ -191,10 +188,19 @@
     <ClInclude Include="Material.h">
       <Filter>Source Files\Material</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Renderable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

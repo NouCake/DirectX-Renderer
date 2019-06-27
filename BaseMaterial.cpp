@@ -1,4 +1,5 @@
 #include "BaseMaterial.h"
+#include "Transform.h"
 
 #include "ImGUI/imgui.h"
 
@@ -35,7 +36,9 @@ void BaseMaterial::Begin(GraphicsD11& gfx, Camera& cam)
 
 void BaseMaterial::UpdateUniforms(GraphicsD11& gfx, Renderable& rend)
 {
-	mCurUniforms.ObjectToWorld = rend.ObjectToWorld;
+	Transform t = *rend.transform;
+
+	mCurUniforms.ObjectToWorld = dx::XMMatrixTranspose(t.GetLocalTransform());
 	mVertCB->Update(gfx, sizeof(VertexUniforms), &mCurUniforms);
 }
 
