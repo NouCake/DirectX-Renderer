@@ -7,16 +7,28 @@ TextureLoader::TextureLoader()
 Texture* TextureLoader::GetTexture(GraphicsD11& gfx, std::string path)
 {
 
-	if (textures.find(path) == textures.end())
+	Texture* ptr = nullptr;
+	for (int i = 0; i < textures.size(); i++)
 	{
-		LoadTexture(gfx, path);
+		if (textures[i]->path == path)
+		{
+			ptr = textures[i];
+
+			return ptr;
+		}
 	}
 
-	return &textures.find(path)->second;
+	if (ptr == nullptr)
+	{
+		LoadTexture(gfx, path);
+		return textures[textures.size() - 1];
+	}
+
+	return nullptr;
 }
 
 void TextureLoader::LoadTexture(GraphicsD11& gfx, std::string path)
 {
-	textures.insert(std::make_pair(path, Texture(gfx, path)));
+	textures.push_back(new Texture(gfx, path));
 }
 

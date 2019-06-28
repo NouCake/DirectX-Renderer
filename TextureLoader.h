@@ -2,7 +2,7 @@
 
 #include "Texture.h"
 
-#include <map>
+#include <vector>
 
 class TextureLoader
 {
@@ -13,6 +13,6 @@ public:
 
 private:
 	void LoadTexture(GraphicsD11& gfx, std::string path);
-	std::map<std::string, Texture> textures;
+	std::vector<Texture*> textures;
 
 };

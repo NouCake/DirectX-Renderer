@@ -1,10 +1,5 @@
 #include "NouEngine.h"
 
-#include "Cube.h"
-#include "Camera.h"
-#include "BaseMaterial.h"
-#include "Mesh.h"
-#include "TextureLoader.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -21,8 +16,28 @@ NouEngine::NouEngine()
 	window(720.f, 480, "NouEnginge")
 {
 
+	Assimp::Importer imp;
+	std::string path = "sponza/sponza.obj";
+	const aiScene* sponzaScene = imp.ReadFile(path,
+		aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+	if (sponzaScene == nullptr)
+	{
+		throw NouException::BaseException(__LINE__, __FILE__, "could not find File " + path);
+	}
+
+	TextureLoader tl = TextureLoader();
+	for (int i = 0; i < sponzaScene->mNumMeshes; i++)
+	{
+		meshes.push_back(Mesh(window.Gfx(), sponzaScene, i, tl));
+	}
+
+
 
 }
+
+
+	
+
 
 int NouEngine::Run()
 {
@@ -70,31 +85,12 @@ void NouEngine::ExecuteFrame()
 	static Cube* cube = new Cube(*g);
 	static Cube* cube2 = new Cube(*g);
 	static BaseMaterial* mat = new BaseMaterial(*g);
-	static std::vector<Mesh> meshes;
-	static bool init;
-	if (!init)
-	{
-		Assimp::Importer imp;
-		std::string path = "sponza/sponza.obj";
-		const aiScene* sponzaScene = imp.ReadFile(path,
-			aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
-
-		if (sponzaScene == nullptr)
-		{
-			throw NouException::BaseException(__LINE__, __FILE__, "could not find File " + path);
-		}
-		init = true;
-
-		TextureLoader tl = TextureLoader();
-		for (int i = 0; i < sponzaScene->mNumMeshes; i++)
-		{
-			meshes.push_back(Mesh(*g, sponzaScene, i, tl));
-		}
-	}
 	
 	cam->SpawnImGuiControl();
 	//cube->SpawnImGuiControl("Cube1");
 	//cube2->SpawnImGuiControl("Cube2");
+
+
 
 	mat->Begin(*g, *cam);
 	//mat->Draw(*g, *cube);

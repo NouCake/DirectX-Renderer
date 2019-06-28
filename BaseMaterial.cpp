@@ -16,10 +16,12 @@ BaseMaterial::BaseMaterial(GraphicsD11& gfx)
 	mCurUniforms.ObjectToWorld = DirectX::XMMatrixIdentity();
 	mVertCB = new VertexConstantBuffer(gfx, sizeof(VertexUniforms), &mCurUniforms);
 
+	unsigned int offs = 0;
 	std::vector<D3D11_INPUT_ELEMENT_DESC> layout = {
 		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, sizeof(BaseMaterial::VertexInput::Vertex), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(BaseMaterial::VertexInput::Vertex) + sizeof(BaseMaterial::VertexInput::Color), D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, (offs += sizeof(BaseMaterial::VertexInput::Vertex)), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, (offs += sizeof(BaseMaterial::VertexInput::Color)), D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, (offs += sizeof(BaseMaterial::VertexInput::UV)), D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 	mInputLayout = new InputLayout(gfx, layout, mVertShader->GetBytecode());
 }

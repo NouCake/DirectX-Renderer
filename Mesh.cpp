@@ -34,6 +34,12 @@ Mesh::Mesh(GraphicsD11& gfx, const aiScene* sponzaScene, int index, TextureLoade
 			vi.uv.u = tv.x;
 			vi.uv.v = tv.y;
 		}
+		if (sponzaMesh->HasNormals())
+		{
+			vi.normal.x = sponzaMesh->mNormals[i].x;
+			vi.normal.y = sponzaMesh->mNormals[i].y;
+			vi.normal.z = sponzaMesh->mNormals[i].z;
+		}
 
 		verts.push_back(vi);
 	}
@@ -85,7 +91,7 @@ void Mesh::Bind(GraphicsD11& gfx)
 	mVertBuf->Bind(gfx);
 	mIndBuf->Bind(gfx);
 	mTopo->Bind(gfx);
-	if (this->mTexture != nullptr && this->mTexture != (Texture*)0xFFFFFFFFFFFFFFFF) {
+	if (this->mTexture != nullptr) {
 
 		this->mTexture->Bind(gfx);
 

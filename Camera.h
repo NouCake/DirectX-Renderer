@@ -3,6 +3,8 @@
 #include "settings.h"
 #include "ImGUI/imgui.h"
 
+#include "Transform.h"
+
 #include <DirectXMath.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -18,25 +20,39 @@ public:
 
 	dx::XMMATRIX GetMatrix();
 
-	void SetPosition(float x, float y, float z);
-	void SetRotation(float x, float y, float z);
 	void LookAt(float x, float y, float z);
 
 #ifdef USE_IMGUI
 	void SpawnImGuiControl()
 	{
 		ImGui::Begin("Camera");
-		if (ImGui::SliderFloat3("Position", pos.m128_f32, -10, 10))
+		dx::XMVECTOR vec = *transform->Position;
+		if (ImGui::SliderFloat3("Position", &vec.m128_f32[0], -10, 10))
+		{
+			mTransform.SetPosition(vec);
+		}
+		static dx::XMVECTOR rot;
+		bool dirty = false;
+		if (ImGui::SliderFloat3("RotationAxis", &rot.m128_f32[0], -1, 1))
 		{
 			dirty = true;
 		}
-		if (ImGui::SliderFloat3("Rotation", rot.m128_f32, -180, 180))
+
+		static float angle;
+		if (ImGui::SliderFloat("Rotation", &angle, -dx::XM_PI, dx::XM_PI))
 		{
 			dirty = true;
+		}
+		if (dirty)
+		{
+			if (rot.m128_f32[0] != 0.0f || rot.m128_f32[1] != 0.0f || rot.m128_f32[2] != 0.0f)
+				mTransform.SetRotation(dx::XMQuaternionRotationAxis(rot, angle));
 		}
 		ImGui::End();
 	}
 #endif
+
+	const Transform* transform = &mTransform;
 
 private:
 
@@ -45,18 +61,18 @@ private:
 	float mAngle = 45.0f;
 	float mAspectRation = 720.0f / 480.0f;
 
-	dx::XMVECTOR pos;
-	dx::XMVECTOR rot;
-
 
 	bool dirty = true;
 	dx::XMMATRIX matrix;
+
+	Transform mTransform;
+
 	void CalculateMatrix()
 	{
 		dirty = false;
+		mTransform.SetPosition(*mTransform.Position);
 		matrix = dx::XMMatrixTranspose(
-			dx::XMMatrixTranslationFromVector(dx::XMVectorScale(pos, -1)) *
-			dx::XMMatrixRotationRollPitchYawFromVector(dx::XMVectorScale(rot, -1 * 3.1415f / 180.0f)) *
+			mTransform.GetLocalTransform() * 
 			dx::XMMatrixPerspectiveFovLH(mAngle, mAspectRation, mNear, mFar)
 		);
 	}

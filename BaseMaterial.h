@@ -26,6 +26,12 @@ public:
 			float u;
 			float v;
 		} uv;
+		struct Normal
+		{
+			float x;
+			float y;
+			float z;
+		} normal;
 	};
 	struct VertexUniforms
 	{
