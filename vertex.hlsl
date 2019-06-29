@@ -4,6 +4,7 @@ struct v2f
 	float4 col : Color;
 	float2 uv : UV;
 	float3 normal : Normal;
+	float3 rp : RawPos;
 };
 
 struct vi
@@ -18,6 +19,7 @@ cbuffer Uniforms
 {
 	matrix ObjectToWorld;
 	matrix WorldToView;
+	float3 camPos;
 };
 
 v2f main(vi input)
@@ -27,6 +29,7 @@ v2f main(vi input)
 	output.col = input.color;
 	output.uv = input.uv;
 	output.normal = input.normal;
+	output.rp = length(camPos - mul(float4(input.pos.x, input.pos.y, input.pos.z, 1), ObjectToWorld));
 
 	return output;
 }

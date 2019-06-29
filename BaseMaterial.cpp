@@ -34,6 +34,7 @@ void BaseMaterial::Begin(GraphicsD11& gfx, Camera& cam)
 	mVertCB->Bind(gfx);
 
 	mCurUniforms.WorldToView = cam.GetMatrix();
+	mCurUniforms.camPos = *cam.transform->Position;
 }
 
 void BaseMaterial::UpdateUniforms(GraphicsD11& gfx, Renderable& rend)

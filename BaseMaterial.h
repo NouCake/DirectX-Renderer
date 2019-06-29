@@ -37,6 +37,7 @@ public:
 	{
 		DirectX::XMMATRIX ObjectToWorld;
 		DirectX::XMMATRIX WorldToView;
+		DirectX::XMVECTOR camPos;
 	};
 
 	BaseMaterial(GraphicsD11& gfx);
