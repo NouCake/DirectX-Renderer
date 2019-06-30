@@ -34,6 +34,9 @@ public:
 	void SetTitle(const char* title);
 	GraphicsD11& Gfx();
 
+	int GetWidth();
+	int GetHeight();
+
 public:
 	static bool ProcessMessage();
 	static int LastQuitCode;

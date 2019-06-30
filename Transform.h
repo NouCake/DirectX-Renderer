@@ -14,6 +14,8 @@ public:
 	//void print();
 	void SetPosition(dx::XMVECTOR pos);
 	void SetRotation(dx::XMVECTOR rotationQuat);
+
+	void Scale(float x, float y, float z);
 	void RotateLocal(dx::XMVECTOR rotationQuat);
 	void RotateAroundPoint(dx::XMVECTOR rotationQuat, dx::XMVECTOR origin);
 

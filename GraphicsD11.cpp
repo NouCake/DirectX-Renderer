@@ -14,24 +14,24 @@
 #include <vector>
 namespace dx = DirectX;
 
-GraphicsD11::GraphicsD11(HWND hWnd)
+GraphicsD11::GraphicsD11(HWND hWnd, const unsigned int width, const unsigned int height)
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
-	sd.BufferDesc.Width = 0;
-	sd.BufferDesc.Height = 0;
+	sd.BufferDesc.Width = width;
+	sd.BufferDesc.Height = height;
 	sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-	sd.BufferDesc.RefreshRate.Numerator = 0;
-	sd.BufferDesc.RefreshRate.Denominator = 0;
+	sd.BufferDesc.RefreshRate.Numerator = 0u;
+	sd.BufferDesc.RefreshRate.Denominator = 0u;
 	sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	sd.SampleDesc.Count = 1;
-	sd.SampleDesc.Quality = 0;
+	sd.SampleDesc.Count = 1u;
+	sd.SampleDesc.Quality = 0u;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.BufferCount = 1;
+	sd.BufferCount = 1u;
 	sd.OutputWindow = hWnd;
 	sd.Windowed = TRUE;
 	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	sd.Flags = 0;
+	sd.Flags = 0u;
 
 	res = D3D11CreateDeviceAndSwapChain(
 		nullptr,
@@ -48,6 +48,7 @@ GraphicsD11::GraphicsD11(HWND hWnd)
 		&pContext
 	);
 	CHECK_HR_EXCEPT();
+
 
 	Microsoft::WRL::ComPtr<ID3D11Resource> pBackBuffer;
 	res = pSwap->GetBuffer(0, __uuidof(ID3D11Resource), &pBackBuffer);
@@ -73,8 +74,8 @@ GraphicsD11::GraphicsD11(HWND hWnd)
 
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> pDepthStencil;
 	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = 800u;
-	descDepth.Height = 600u;
+	descDepth.Width = width;
+	descDepth.Height = height;
 	descDepth.MipLevels = 1u;
 	descDepth.ArraySize = 1u;
 	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -88,23 +89,41 @@ GraphicsD11::GraphicsD11(HWND hWnd)
 	// create view of depth stensil texture
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
 	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
-	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 	descDSV.Texture2D.MipSlice = 0u;
 	res = pDevice->CreateDepthStencilView(
 		pDepthStencil.Get(), &descDSV, &pDSV
 	);
 	CHECK_HR_EXCEPT();
 
+
+
+	// CREATE SAMPLER
+	Microsoft::WRL::ComPtr<ID3D11SamplerState> pSampler;
+	D3D11_SAMPLER_DESC samplerDesc = {};
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MaxAnisotropy = 16;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = std::numeric_limits<float>::max();
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+
+	pDevice->CreateSamplerState(&samplerDesc, &pSampler);
+	pContext->PSSetSamplers(0, 1, pSampler.GetAddressOf());
+
 	D3D11_VIEWPORT vp = {};
-	vp.Width = 720;
-	vp.Height = 480;
+	vp.Width = width;
+	vp.Height = height;
 	vp.MinDepth = 0;
 	vp.MaxDepth = 1;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
 	pContext->RSSetViewports(1u, &vp);
 
-	pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), nullptr);
+	pContext->OMSetRenderTargets(1u, pTarget.GetAddressOf(), pDSV.Get());
 
 #ifdef USE_IMGUI
 	IMGUI_CHECKVERSION();

@@ -1,4 +1,5 @@
 #include "TextureLoader.h"
+#include "NouTimer.h"
 
 TextureLoader::TextureLoader()
 {
@@ -20,7 +21,10 @@ Texture* TextureLoader::GetTexture(GraphicsD11& gfx, std::string path)
 
 	if (ptr == nullptr)
 	{
+		static NouTimer* timer = new NouTimer();
+		timer->Mark();
 		LoadTexture(gfx, path);
+		OutputDebugString(("Loading " + path + " took: " + std::to_string(timer->Peek()) + "\n").c_str());
 		return textures[textures.size() - 1];
 	}
 

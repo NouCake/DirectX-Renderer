@@ -13,24 +13,29 @@
 
 NouEngine::NouEngine()
 	:
-	window(720.f, 480, "NouEnginge")
+	window(1280, 720, "NouEnginge")
 {
 
 	Assimp::Importer imp;
-	std::string path = "sponza/sponza.obj";
+	std::string path = "res/sponza.obj";
+	NouTimer* timer = new NouTimer();
+	timer->Mark();
 	const aiScene* sponzaScene = imp.ReadFile(path,
-		aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+		aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
 	if (sponzaScene == nullptr)
 	{
 		throw NouException::BaseException(__LINE__, __FILE__, "could not find File " + path);
 	}
+	OutputDebugString(("Loading " + path + " took: " + std::to_string(timer->Peek()) + "\n").c_str());
 
 	TextureLoader tl = TextureLoader();
 	for (int i = 0; i < sponzaScene->mNumMeshes; i++)
 	{
+		if(i != 258)
 		meshes.push_back(Mesh(window.Gfx(), sponzaScene, i, tl));
 	}
 
+	OutputDebugString(("Loading all took: " + std::to_string(timer->Peek()) + "\n").c_str());
 
 
 }
@@ -81,7 +86,7 @@ void NouEngine::ExecuteFrame()
 	t *= speedMultiplier;
 #endif
 
-	static Camera* cam = new Camera();
+	static Camera* cam = new Camera(window.GetWidth(), window.GetHeight());
 	static Cube* cube = new Cube(*g);
 	static Cube* cube2 = new Cube(*g);
 	static BaseMaterial* mat = new BaseMaterial(*g);

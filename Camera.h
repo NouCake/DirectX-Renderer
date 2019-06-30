@@ -15,7 +15,7 @@ namespace dx = DirectX;
 class Camera
 {
 public:
-	Camera();
+	Camera(const unsigned int width, const unsigned int height);
 	~Camera() = default;
 
 	dx::XMMATRIX GetMatrix();
@@ -59,7 +59,9 @@ private:
 	float mNear = 0.1f;
 	float mFar = 100.0f;
 	float mAngle = 45.0f;
-	float mAspectRation = 720.0f / 480.0f;
+	float width;
+	float height;
+	float mAspectRation = width / height;
 
 
 	bool dirty = true;

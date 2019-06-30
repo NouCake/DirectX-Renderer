@@ -18,10 +18,10 @@ public:
 	void SpawnImGuiControl(std::string name)
 	{
 		ImGui::Begin(name.c_str());
-		dx::XMVECTOR vec = *transform->Position;
+		dx::XMVECTOR vec = *mTransform->Position;
 		if (ImGui::SliderFloat3("Position", &vec.m128_f32[0], -10, 10))
 		{
-			mTransform.SetPosition(vec);
+			mTransform->SetPosition(vec);
 		}
 		static dx::XMVECTOR rot;
 		bool dirty = false;
@@ -38,7 +38,7 @@ public:
 		if (dirty)
 		{
 			if(rot.m128_f32[0] != 0.0f || rot.m128_f32[1] != 0.0f || rot.m128_f32[2] != 0.0f)
-			mTransform.SetRotation(dx::XMQuaternionRotationAxis(rot, angle));
+			mTransform->SetRotation(dx::XMQuaternionRotationAxis(rot, angle));
 		}
 		ImGui::End();
 	}

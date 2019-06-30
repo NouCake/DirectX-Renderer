@@ -57,7 +57,7 @@ Cube::Cube(GraphicsD11& gfx)
 
 	mIndCount = std::size(ind);
 
-	mTransform.SetPosition({ 1.0f, 0.0f, 0.0f, 0.0f });
+	mTransform->SetPosition({ 1.0f, 0.0f, 0.0f, 0.0f });
 }
 
 void Cube::Bind(GraphicsD11& gfx)

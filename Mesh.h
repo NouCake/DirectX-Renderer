@@ -17,5 +17,5 @@ public:
 	void Bind(GraphicsD11& gfx) override;
 
 private:
-	Texture* mTexture;
+	Texture* mTexture = nullptr;
 };

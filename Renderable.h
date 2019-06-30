@@ -22,7 +22,10 @@ public:
 		return mIndCount;
 	}
 
-	const Transform* transform = &mTransform;
+	Transform& GetTransform()
+	{
+		return *mTransform;
+	}
 
 protected:
 	VertexBuffer* mVertBuf;
@@ -30,5 +33,5 @@ protected:
 	Topology* mTopo;
 
 	UINT mIndCount;
-	Transform mTransform;
+	Transform* mTransform = new Transform();
 };

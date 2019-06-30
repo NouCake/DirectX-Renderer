@@ -20,7 +20,7 @@ class GraphicsD11
 public:
 
 
-	GraphicsD11(HWND hWnd);
+	GraphicsD11(HWND hWnd, const unsigned int width, const unsigned int height);
 	GraphicsD11(const GraphicsD11&) = delete;
 	GraphicsD11& operator=(const GraphicsD11&) = delete;
 	~GraphicsD11() = default;

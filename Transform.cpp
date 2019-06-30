@@ -47,3 +47,8 @@ dx::XMMATRIX Transform::GetLocalTransform()
 {
 	return localTransform;
 }
+
+void Transform::Scale(float x, float y, float z)
+{
+	localTransform = dx::XMMatrixMultiply(dx::XMMatrixScaling(x, y, z), localTransform);
+}

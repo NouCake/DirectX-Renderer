@@ -35,13 +35,16 @@ void BaseMaterial::Begin(GraphicsD11& gfx, Camera& cam)
 
 	mCurUniforms.WorldToView = cam.GetMatrix();
 	mCurUniforms.camPos = *cam.transform->Position;
+	if (ImGui::Button("Hello"))
+	{
+		int albert = 0;
+	}
 }
 
 void BaseMaterial::UpdateUniforms(GraphicsD11& gfx, Renderable& rend)
 {
-	Transform t = *rend.transform;
 
-	mCurUniforms.ObjectToWorld = dx::XMMatrixIdentity();
+	mCurUniforms.ObjectToWorld = dx::XMMatrixTranspose(rend.GetTransform().GetLocalTransform());
 	mVertCB->Update(gfx, sizeof(VertexUniforms), &mCurUniforms);
 }
 

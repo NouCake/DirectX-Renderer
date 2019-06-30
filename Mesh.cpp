@@ -12,7 +12,7 @@ Mesh::Mesh(GraphicsD11& gfx, const aiScene* sponzaScene, int index, TextureLoade
 	
 
 	const aiMesh* sponzaMesh = sponzaScene->mMeshes[index];
-	float scale = 0.01f;
+	mTransform->Scale(0.01f, 0.01f, 0.01f);
 
 
 	std::vector<BaseMaterial::VertexInput> verts;
@@ -21,19 +21,24 @@ Mesh::Mesh(GraphicsD11& gfx, const aiScene* sponzaScene, int index, TextureLoade
 	{
 		BaseMaterial::VertexInput vi = {};
 		vi.vertex = {
-			sponzaMesh->mVertices[i].x * scale,
-			sponzaMesh->mVertices[i].y * scale,
-			sponzaMesh->mVertices[i].z * scale
+			sponzaMesh->mVertices[i].x,
+			sponzaMesh->mVertices[i].y,
+			sponzaMesh->mVertices[i].z
 		};
 		//throw NouException::BaseException(__LINE__, __FILE__, "Vert " + std::to_string(vi.vertex.x) + " " + std::to_string(vi.vertex.y) + " " + std::to_string(vi.vertex.z));
 		vi.color = { 255, 255, 255, 255 };
-		vi.uv = { 0.0f, 0.0f };
+		vi.uv = { 0.5f, 0.5f };
 		if (sponzaMesh->HasTextureCoords(0))
 		{
 			const auto tv = sponzaMesh->mTextureCoords[0][i];
 			vi.uv.u = tv.x;
 			vi.uv.v = tv.y;
 		}
+		else
+		{
+			int estragon = 13;
+		}
+
 		if (sponzaMesh->HasNormals())
 		{
 			vi.normal.x = sponzaMesh->mNormals[i].x;
@@ -43,6 +48,8 @@ Mesh::Mesh(GraphicsD11& gfx, const aiScene* sponzaScene, int index, TextureLoade
 
 		verts.push_back(vi);
 	}
+
+	//OutputDebugString(("Num of Mesh Verts: " + std::to_string(sponzaMesh->mNumVertices) + "\n").c_str());
 
 	std::vector<UINT16> ind;
 	ind.reserve(sponzaMesh->mNumFaces);
@@ -76,10 +83,31 @@ Mesh::Mesh(GraphicsD11& gfx, const aiScene* sponzaScene, int index, TextureLoade
 	{
 		aiString astr;
 		auto may = mat->GetTexture(aiTextureType_DIFFUSE, 0, &astr);
-		mTexture = loader.GetTexture(gfx, "sponza/" + std::string(astr.C_Str()));
+		mTexture = loader.GetTexture(gfx, "res/" + std::string(astr.C_Str()));
+	}
+	else {
+		int h = 87;
+		for (int i = 0; i < mat->mNumProperties; i++)
+		{
+			auto matProb = mat->mProperties[i];
+			const int size = mat->mProperties[i]->mDataLength;
+			char* dat = mat->mProperties[i]->mData;
+			std::string str = "";
+			for (int c = 0; c < size; c++)
+			{
+				str.push_back(dat[c]);
+			}
+			h = 0;
+			mTexture = loader.GetTexture(gfx, "res/unknown.png");
+		}
 	}
 
-	mIndCount = sponzaMesh->mNumFaces;
+	if (mat->GetTextureCount(aiTextureType_HEIGHT) > 0)
+	{
+		int a = 03;
+	}
+
+	mIndCount = sponzaMesh->mNumFaces * 3;
 
 	verts.clear();
 	ind.clear();

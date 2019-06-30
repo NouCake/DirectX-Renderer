@@ -87,7 +87,7 @@ NouWindow::NouWindow(int width, int height, const char* name)
 	}
 
 	ShowWindow(hWnd, SW_SHOWDEFAULT);
-	pGfx = new GraphicsD11(hWnd);
+	pGfx = new GraphicsD11(hWnd, width, height);
 
 
 }
@@ -107,6 +107,16 @@ void NouWindow::SetTitle(const char* title)
 GraphicsD11& NouWindow::Gfx()
 {
 	return *pGfx;
+}
+
+int NouWindow::GetWidth()
+{
+	return width;
+}
+
+int NouWindow::GetHeight()
+{
+	return height;
 }
 
 bool NouWindow::ProcessMessage()
