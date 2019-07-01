@@ -10,7 +10,8 @@ public:
 	void Bind(GraphicsD11& gfx) noexcept override;
 
 	std::string path;
-
+	void SetSlot(UINT slot);
 private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> pTextureView;
+	UINT mSlot = 0;
 };

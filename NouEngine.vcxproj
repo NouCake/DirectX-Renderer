@@ -26,6 +26,12 @@
     <ClCompile Include="FragmentShader.cpp" />
     <ClCompile Include="GraphicsD11.cpp" />
     <ClCompile Include="GraphicsD13.cpp" />
+    <ClCompile Include="Hieroglyph\Matrix3f.cpp" />
+    <ClCompile Include="Hieroglyph\Matrix4f.cpp" />
+    <ClCompile Include="Hieroglyph\Transform3D.cpp" />
+    <ClCompile Include="Hieroglyph\Vector2f.cpp" />
+    <ClCompile Include="Hieroglyph\Vector3f.cpp" />
+    <ClCompile Include="Hieroglyph\Vector4f.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
     <ClCompile Include="ImGUI\imgui_demo.cpp" />
     <ClCompile Include="ImGUI\imgui_draw.cpp" />
@@ -40,6 +46,7 @@
     <ClCompile Include="NouTimer.cpp" />
     <ClCompile Include="NouWindow.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Topology.cpp" />
@@ -54,7 +61,14 @@
     <ClInclude Include="CImg\stb_image.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="Hieroglyph\Matrix3f.h" />
+    <ClInclude Include="Hieroglyph\Matrix4f.h" />
+    <ClInclude Include="Hieroglyph\Transform3D.h" />
+    <ClInclude Include="Hieroglyph\Vector2f.h" />
+    <ClInclude Include="Hieroglyph\Vector3f.h" />
+    <ClInclude Include="Hieroglyph\Vector4f.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="FragmentShader.h" />
     <ClInclude Include="GraphicsD11.h" />

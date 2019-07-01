@@ -9,7 +9,7 @@
 
 Mesh::Mesh(GraphicsD11& gfx, const aiScene* sponzaScene, int index, TextureLoader& loader)
 {
-	
+
 
 	const aiMesh* sponzaMesh = sponzaScene->mMeshes[index];
 	mTransform->Scale(0.01f, 0.01f, 0.01f);
@@ -71,42 +71,51 @@ Mesh::Mesh(GraphicsD11& gfx, const aiScene* sponzaScene, int index, TextureLoade
 	);
 	mIndBuf = new IndexBuffer(
 		gfx,
-		sponzaMesh->mNumFaces*3,
+		sponzaMesh->mNumFaces * 3,
 		&ind[0]
 	);
 	mTopo = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 
+	mTextureMode = BaseMaterial::TEXTUREMODE_AMBIENT;
 	int matIndex = sponzaMesh->mMaterialIndex;
 	auto mat = sponzaScene->mMaterials[matIndex];
 	if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0)
 	{
 		aiString astr;
 		auto may = mat->GetTexture(aiTextureType_DIFFUSE, 0, &astr);
-		mTexture = loader.GetTexture(gfx, "res/" + std::string(astr.C_Str()));
+		mTextureDiff = loader.GetTexture(gfx, "res/" + std::string(astr.C_Str()));
+		mTextureDiff->SetSlot(0);
+		mTextureMode += BaseMaterial::TEXTUREMODE_DIFFUSE;
 	}
-	else {
-		int h = 87;
-		for (int i = 0; i < mat->mNumProperties; i++)
-		{
-			auto matProb = mat->mProperties[i];
-			const int size = mat->mProperties[i]->mDataLength;
-			char* dat = mat->mProperties[i]->mData;
-			std::string str = "";
-			for (int c = 0; c < size; c++)
-			{
-				str.push_back(dat[c]);
-			}
-			h = 0;
-			mTexture = loader.GetTexture(gfx, "res/unknown.png");
-		}
-	}
-
-	if (mat->GetTextureCount(aiTextureType_HEIGHT) > 0)
+	
+	if (mat->GetTextureCount(aiTextureType_SPECULAR) > 0)
 	{
-		int a = 03;
+		aiString astr;
+		auto may = mat->GetTexture(aiTextureType_SPECULAR, 0, &astr);
+		mTextureSpec = loader.GetTexture(gfx, "res/" + std::string(astr.C_Str()));
+		mTextureSpec->SetSlot(1);
+		mTextureMode += BaseMaterial::TEXTUREMODE_SPECULAR;
 	}
 
+	/*
+	static UINT counter[16] = { 0,0,0,0,
+		0,0,0,0,
+		0,0,0,0,
+		0,0,0,0 };
+	if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0)	counter[0]++;
+	if (mat->GetTextureCount(aiTextureType_SPECULAR) > 0)	counter[1]++;
+	if (mat->GetTextureCount(aiTextureType_AMBIENT) > 0)	counter[2]++;
+	if (mat->GetTextureCount(aiTextureType_EMISSIVE) > 0)	counter[3]++;
+	if (mat->GetTextureCount(aiTextureType_HEIGHT) > 0)		counter[4]++;
+	if (mat->GetTextureCount(aiTextureType_NORMALS) > 0)	counter[5]++;
+	if (mat->GetTextureCount(aiTextureType_SHININESS) > 0)	counter[6]++;
+	if (mat->GetTextureCount(aiTextureType_OPACITY) > 0)	counter[7]++;
+	if (mat->GetTextureCount(aiTextureType_LIGHTMAP) > 0)	counter[8]++;
+	if (mat->GetTextureCount(aiTextureType_REFLECTION) > 0) counter[9]++;
+	if (mat->GetTextureCount(aiTextureType_UNKNOWN) > 0)	counter[10]++;
+	if (mat->GetTextureCount(aiTextureType_NONE) > 0)		counter[11]++;
+	*/
 	mIndCount = sponzaMesh->mNumFaces * 3;
 
 	verts.clear();
@@ -119,9 +128,6 @@ void Mesh::Bind(GraphicsD11& gfx)
 	mVertBuf->Bind(gfx);
 	mIndBuf->Bind(gfx);
 	mTopo->Bind(gfx);
-	if (this->mTexture != nullptr) {
-
-		this->mTexture->Bind(gfx);
-
-	}
+	if (mTextureDiff != nullptr) mTextureDiff->Bind(gfx);
+	if (mTextureSpec != nullptr) mTextureSpec->Bind(gfx);
 }

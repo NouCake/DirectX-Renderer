@@ -19,6 +19,10 @@ Texture::Texture(GraphicsD11& gfx, std::string path)
 		imgdata = data;
 	}
 
+	if (channels < 3)
+	{
+		int none = 3;
+	}
 
 	D3D11_TEXTURE2D_DESC td = {};
 	td.Width = width;
@@ -59,5 +63,10 @@ Texture::Texture(GraphicsD11& gfx, std::string path)
 
 void Texture::Bind(GraphicsD11& gfx) noexcept
 {
-	GetContext(gfx)->PSSetShaderResources(0u, 1u, pTextureView.GetAddressOf());
+	GetContext(gfx)->PSSetShaderResources(mSlot, 1u, pTextureView.GetAddressOf());
+}
+
+void Texture::SetSlot(UINT slot)
+{
+	mSlot = slot;
 }

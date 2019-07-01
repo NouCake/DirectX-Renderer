@@ -4,6 +4,7 @@ struct v2f
 	float2 uv : UV;
 	float3 normal : Normal;
 	float3 camDir: CameraDirection;
+	float3 worldPos : WorldPos;
 };
 
 struct vi
@@ -28,7 +29,8 @@ v2f main(vi input)
 	output.pos = mul(worldPos, WorldToView);
 	output.uv = input.uv;
 	output.normal = input.normal;
-	output.camDir = camPos - worldPos;
+	output.camDir = worldPos - camPos;
+	output.worldPos = worldPos;
 
 	return output;
 }

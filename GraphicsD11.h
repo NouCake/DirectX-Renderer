@@ -40,6 +40,5 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDSV;
 
 	UINT primitiveCount = 0;
-
 };
 

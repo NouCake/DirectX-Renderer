@@ -89,7 +89,7 @@ GraphicsD11::GraphicsD11(HWND hWnd, const unsigned int width, const unsigned int
 	// create view of depth stensil texture
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
 	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
-	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSV.Texture2D.MipSlice = 0u;
 	res = pDevice->CreateDepthStencilView(
 		pDepthStencil.Get(), &descDSV, &pDSV

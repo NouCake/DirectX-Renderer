@@ -25,6 +25,9 @@
     <Filter Include="ImGUI">
       <UniqueIdentifier>{9cb23037-9881-4a84-bc9b-62699a18b6e0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Hieroglyph">
+      <UniqueIdentifier>{a40d5063-bf24-45f9-a4de-a9de219a50f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -108,6 +111,27 @@
     <ClCompile Include="TextureLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Hieroglyph\Vector4f.cpp">
+      <Filter>Hieroglyph</Filter>
+    </ClCompile>
+    <ClCompile Include="Hieroglyph\Vector2f.cpp">
+      <Filter>Hieroglyph</Filter>
+    </ClCompile>
+    <ClCompile Include="Hieroglyph\Vector3f.cpp">
+      <Filter>Hieroglyph</Filter>
+    </ClCompile>
+    <ClCompile Include="Hieroglyph\Matrix4f.cpp">
+      <Filter>Hieroglyph</Filter>
+    </ClCompile>
+    <ClCompile Include="Hieroglyph\Matrix3f.cpp">
+      <Filter>Hieroglyph</Filter>
+    </ClCompile>
+    <ClCompile Include="Hieroglyph\Transform3D.cpp">
+      <Filter>Hieroglyph</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NouWin.h">
@@ -188,9 +212,6 @@
     <ClInclude Include="Texture.h">
       <Filter>Bindable</Filter>
     </ClInclude>
-    <ClInclude Include="CImg\stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>Source Files\Material</Filter>
     </ClInclude>
@@ -213,6 +234,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TextureLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CImg\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Hieroglyph\Vector4f.h">
+      <Filter>Hieroglyph</Filter>
+    </ClInclude>
+    <ClInclude Include="Hieroglyph\Transform3D.h">
+      <Filter>Hieroglyph</Filter>
+    </ClInclude>
+    <ClInclude Include="Hieroglyph\Vector2f.h">
+      <Filter>Hieroglyph</Filter>
+    </ClInclude>
+    <ClInclude Include="Hieroglyph\Vector3f.h">
+      <Filter>Hieroglyph</Filter>
+    </ClInclude>
+    <ClInclude Include="Hieroglyph\Matrix3f.h">
+      <Filter>Hieroglyph</Filter>
+    </ClInclude>
+    <ClInclude Include="Hieroglyph\Matrix4f.h">
+      <Filter>Hieroglyph</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

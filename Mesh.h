@@ -15,7 +15,9 @@ public:
 	~Mesh() = default;
 
 	void Bind(GraphicsD11& gfx) override;
+	UINT32 mTextureMode = 0;
 
 private:
-	Texture* mTexture = nullptr;
+	Texture* mTextureDiff = nullptr;
+	Texture* mTextureSpec = nullptr;
 };

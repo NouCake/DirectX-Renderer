@@ -45,5 +45,5 @@ public:
 #endif
 
 private:
-	Texture* mTexture;
+	Texture* mTextureDiff;
 };

@@ -8,6 +8,7 @@ class ConstantBuffer : public Bindable
 public:
 	ConstantBuffer(GraphicsD11& gfx, UINT size, void* data)
 	{
+		OutputDebugString(("ConstantBuffer size: " + std::to_string(size) + "\n").c_str());
 		D3D11_BUFFER_DESC bd = {};
 		bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 		bd.Usage = D3D11_USAGE_DYNAMIC;

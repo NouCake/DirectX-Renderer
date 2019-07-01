@@ -18,64 +18,45 @@ public:
 	Camera(const unsigned int width, const unsigned int height);
 	~Camera() = default;
 
-	dx::XMMATRIX GetMatrix();
-
-	void LookAt(float x, float y, float z);
-
 #ifdef USE_IMGUI
 	void SpawnImGuiControl()
 	{
 		ImGui::Begin("Camera");
-		dx::XMVECTOR vec = *transform->Position;
-		if (ImGui::SliderFloat3("Position", &vec.m128_f32[0], -10, 10))
+		ImGui::SliderFloat3("Position", &mPos.m128_f32[0], -15, 15);
+
+		static float rot[3] = { 0.0f, 0.0f, 0.0f };
+		if (ImGui::SliderFloat3("Rotation", &rot[0], -180, 180))
 		{
-			mTransform.SetPosition(vec);
-		}
-		static dx::XMVECTOR rot;
-		bool dirty = false;
-		if (ImGui::SliderFloat3("RotationAxis", &rot.m128_f32[0], -1, 1))
-		{
-			dirty = true;
+
+			mRotQuat = dx::XMQuaternionMultiply(dx::XMQuaternionMultiply(dx::XMQuaternionRotationAxis({ 1.0f, 0.0f, 0.0f }, -rot[0] * dx::XM_PI / 180.0f),
+				dx::XMQuaternionRotationAxis({ 0.0f, 1.0f, 0.0f }, -rot[1] * dx::XM_PI / 180.0f)),
+				dx::XMQuaternionRotationAxis({ 0.0f, 0.0f, 1.0f },- rot[2] * dx::XM_PI / 180.0f));
 		}
 
-		static float angle;
-		if (ImGui::SliderFloat("Rotation", &angle, -dx::XM_PI, dx::XM_PI))
-		{
-			dirty = true;
-		}
-		if (dirty)
-		{
-			if (rot.m128_f32[0] != 0.0f || rot.m128_f32[1] != 0.0f || rot.m128_f32[2] != 0.0f)
-				mTransform.SetRotation(dx::XMQuaternionRotationAxis(rot, angle));
-		}
+		ImGui::SliderFloat("FOV", &mAngle, 0.1f, 3*dx::XM_PI/ 4.0f);
 		ImGui::End();
 	}
 #endif
 
-	const Transform* transform = &mTransform;
+	dx::XMMATRIX GetMatrix()
+	{
+
+		return dx::XMMatrixTranspose(
+			dx::XMMatrixTranslation(-mPos.m128_f32[0], -mPos.m128_f32[1], -mPos.m128_f32[2]) *
+			dx::XMMatrixRotationQuaternion(mRotQuat) *
+			dx::XMMatrixPerspectiveFovLH(mAngle, mAspectRation, mNear, mFar)
+		);
+	}
+	dx::XMVECTOR mPos = { 0.0f, 0.0f, 0.0f };
 
 private:
-
 	float mNear = 0.1f;
 	float mFar = 100.0f;
-	float mAngle = 45.0f;
+	float mAngle = 100.0f * dx::XM_PI / 180.0f;
 	float width;
 	float height;
 	float mAspectRation = width / height;
 
+	dx::XMVECTOR mRotQuat = { };
 
-	bool dirty = true;
-	dx::XMMATRIX matrix;
-
-	Transform mTransform;
-
-	void CalculateMatrix()
-	{
-		dirty = false;
-		mTransform.SetPosition(*mTransform.Position);
-		matrix = dx::XMMatrixTranspose(
-			mTransform.GetLocalTransform() * 
-			dx::XMMatrixPerspectiveFovLH(mAngle, mAspectRation, mNear, mFar)
-		);
-	}
 };
