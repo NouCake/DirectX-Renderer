@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Hieroglyph/Transform3D.h"
-
 class PointLight
 {
 public:
@@ -10,5 +8,4 @@ public:
 
 private:
 	float mIntensity = 1.0f;
-	Glyph3::Transform3D* transform;
 };

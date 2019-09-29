@@ -32,6 +32,18 @@ public:
 			float y;
 			float z;
 		} normal;
+		struct Tangent
+		{
+			float x;
+			float y;
+			float z;
+		} tangent;
+		struct Bitangent
+		{
+			float x;
+			float y;
+			float z;
+		} bitangent;
 	};
 	struct VertexUniforms
 	{

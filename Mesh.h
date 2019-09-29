@@ -8,16 +8,62 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-class Mesh : public Renderable
+class Mesh
 {
 public:
-	Mesh(GraphicsD11& gfx, const aiScene* sponzaScene, int index, TextureLoader& loader);
+	struct Vertex {
+		struct Position {
+			float x;
+			float y;
+			float z;
+		} position;
+
+		struct Normal {
+			float x;
+			float y;
+			float z;
+		} normal;
+
+		struct Tangent {
+			float x;
+			float y;
+			float z;
+		} tangent;
+
+		struct Bitangent {
+			float x;
+			float y;
+			float z;
+		} bitangent;
+
+		struct Textcoord {
+			float u;
+			float v;
+		} textcoord;
+	};
+
+public:
+	Mesh(int numVerts, Vertex::Position* vertPos, Vertex::Normal* vertNorm,
+		Vertex::Tangent* vertTang, Vertex::Bitangent* vertBitang, 
+		Vertex::Textcoord* vertTex, int numInds, UINT* indecies);
 	~Mesh() = default;
 
-	void Bind(GraphicsD11& gfx) override;
-	UINT32 mTextureMode = 0;
+	int getNumVerts();
+	int getNumInds();
+
+	Vertex* getVerts();
+	UINT* getInds();
 
 private:
-	Texture* mTextureDiff = nullptr;
-	Texture* mTextureSpec = nullptr;
+
+	int mNumVerts;
+	int mNumInds;
+
+	Vertex* mVerts;
+	UINT* mInds;
+
+	bool mHasNormal;
+	bool mHasTangent;
+	bool mHasTextCoord;
+
 };
