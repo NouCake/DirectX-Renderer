@@ -50,7 +50,6 @@ public:
 		DirectX::XMMATRIX ObjectToWorld;
 		DirectX::XMMATRIX WorldToView;
 		DirectX::XMVECTOR CamPos;
-		UINT16 TextureMode;
 	};
 	struct FragmentUniforms
 	{
@@ -58,22 +57,18 @@ public:
 		float LightIntensity;
 		float LightPos[2];
 	};
-	static const UINT32 TEXTUREMODE_DIFFUSE = 0b1;
-	static const UINT32 TEXTUREMODE_AMBIENT = 0b10;
-	static const UINT32 TEXTUREMODE_SPECULAR= 0b100;
-	static const UINT32 TEXTUREMODE_HEIGHT = 0b1000;
 
 	BaseMaterial(GraphicsD11& gfx);
 	~BaseMaterial() = default;
+
 	void Draw(GraphicsD11& gfx, Renderable& rend) override;
 	void Begin(GraphicsD11& gfx, Camera& cam) override;
-	void UpdateUniforms(GraphicsD11& gfx, Renderable& rend);
 
-	void SetTextureMode(UINT32 TextureMode);
+	void UpdateUniforms(GraphicsD11& gfx, Renderable& rend);
 
 private:
 	VertexUniforms mCurVertexUniforms;
 	FragmentUniforms mCurFragUniforms;
-	bool* gTM = nullptr;
+
 };
 

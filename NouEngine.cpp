@@ -16,26 +16,6 @@ NouEngine::NouEngine()
 	window(1280, 720, "NouEnginge")
 {
 
-	Assimp::Importer imp;
-	std::string path = "res/sponza.obj";
-	NouTimer* timer = new NouTimer();
-	timer->Mark();
-	const aiScene* sponzaScene = imp.ReadFile(path,
-		aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_FlipUVs);
-	if (sponzaScene == nullptr)
-	{
-		throw NouException::BaseException(__LINE__, __FILE__, "could not find File " + path);
-	}
-	OutputDebugString(("Loading " + path + " took: " + std::to_string(timer->Peek()) + "\n").c_str());
-
-	TextureLoader tl = TextureLoader();
-	for (int i = 0; i < sponzaScene->mNumMeshes; i++)
-	{
-		if(i != 258)
-		meshes.push_back(Mesh(window.Gfx(), sponzaScene, i, tl));
-	}
-
-	OutputDebugString(("Loading all took: " + std::to_string(timer->Peek()) + "\n").c_str());
 
 
 }
@@ -87,24 +67,9 @@ void NouEngine::ExecuteFrame()
 #endif
 
 	static Camera* cam = new Camera(window.GetWidth(), window.GetHeight());
-	static Cube* cube = new Cube(*g);
-	static Cube* cube2 = new Cube(*g);
-	static BaseMaterial* mat = new BaseMaterial(*g);
-	
 	cam->SpawnImGuiControl();
-	//cube->SpawnImGuiControl("Cube1");
-	//cube2->SpawnImGuiControl("Cube2");
 
 
-
-	mat->Begin(*g, *cam);
-	//mat->Draw(*g, *cube);
-	//mat->Draw(*g, *cube2);
-	for (int i = 0; i < meshes.size(); i++)
-	{
-		mat->Draw(*g, meshes[i]);
-	}
 
 	g->OnFrameEnd();
-	
 }

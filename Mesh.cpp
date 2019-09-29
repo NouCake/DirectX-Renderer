@@ -2,6 +2,7 @@
 
 #include "NouException.h"
 #include "BaseMaterial.h"
+#include "NouException.h"
 
 #include <vector>
 #include <iostream>
@@ -11,6 +12,8 @@ Mesh::Mesh(int numVerts, Vertex::Position* vertPos, Vertex::Normal* vertNorm,
 	
 	mNumVerts = numVerts;
 	mVerts = (Vertex*)malloc(sizeof(Vertex) * mNumVerts);
+	if (mVerts == nullptr) throw NouException::BaseException(__LINE__, __FILE__, "Malloc failed");
+
 	mHasNormal = vertNorm != nullptr;
 	mHasTangent = (vertTang != nullptr) && (vertBitang != nullptr);
 	mHasTextCoord = vertTex != nullptr;
@@ -47,8 +50,9 @@ Mesh::Mesh(int numVerts, Vertex::Position* vertPos, Vertex::Normal* vertNorm,
 
 	mNumInds = numInds;
 	mInds = (UINT*)malloc(sizeof(UINT) * mNumInds);
-	memcpy(mInds, indecies, sizeof(UINT)*mNumInds);
-
+	if (mInds == nullptr) throw NouException::BaseException(__LINE__, __FILE__, "Malloc failed");
+	
+	memcpy((void*)mInds, indecies, sizeof(UINT) * mNumInds);
 }
 
 int Mesh::getNumVerts() {

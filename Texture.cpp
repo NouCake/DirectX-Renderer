@@ -2,7 +2,7 @@
 #include "NouException.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "CImg/stb_image.h"
+#include "STBImage/stb_image.h"
 
 Texture::Texture(GraphicsD11& gfx, std::string path)
 {

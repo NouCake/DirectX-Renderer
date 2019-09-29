@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="BaseMaterial.cpp" />
     <ClCompile Include="Bindable.cpp" />
+    <ClCompile Include="BindableMesh.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="FragmentShader.cpp" />
@@ -35,6 +36,8 @@
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="InputLayou.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="NouEngine.cpp" />
     <ClCompile Include="NouException.cpp" />
     <ClCompile Include="NouTimer.cpp" />
@@ -51,11 +54,13 @@
   <ItemGroup>
     <ClInclude Include="BaseMaterial.h" />
     <ClInclude Include="Bindable.h" />
+    <ClInclude Include="BindableMesh.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CImg\stb_image.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshLoader.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Renderable.h" />
     <ClInclude Include="FragmentShader.h" />
@@ -85,6 +90,7 @@
     <ClInclude Include="Transform.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="VertexStruct.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NouEngine.rc" />
