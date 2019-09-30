@@ -6,17 +6,15 @@
 #include <assimp/postprocess.h>
 
 #ifdef USE_IMGUI
-#include "ImGUI/imgui.h"
-#include "ImGUI/imgui_impl_win32.h"
-#include "ImGUI/imgui_impl_dx11.h"
+	#include "ImGUI/imgui.h"
+	#include "ImGUI/imgui_impl_win32.h"
+	#include "ImGUI/imgui_impl_dx11.h"
 #endif
 
 NouEngine::NouEngine()
 	:
-	window(1280, 720, "NouEnginge")
+	window(1280, 720, "NouEnginge") 
 {
-
-
 
 }
 
@@ -24,8 +22,7 @@ NouEngine::NouEngine()
 	
 
 
-int NouEngine::Run()
-{
+int NouEngine::Run() {
 
 	while (true)
 	{
@@ -47,8 +44,8 @@ int NouEngine::Run()
 	return -1;
 }
 
-void NouEngine::ExecuteFrame()
-{
+void NouEngine::ExecuteFrame() {
+
 #ifdef USE_IMGUI
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -69,7 +66,6 @@ void NouEngine::ExecuteFrame()
 	static Camera* cam = new Camera(window.GetWidth(), window.GetHeight());
 	cam->SpawnImGuiControl();
 
-
-
 	g->OnFrameEnd();
+
 }

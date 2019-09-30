@@ -10,7 +10,6 @@
 class Material
 {
 public:
-	Material(GraphicsD11& gfx);
 	~Material() = default;
 	virtual void Draw(GraphicsD11& gfx, Renderable& rend) = 0;
 	virtual void Begin(GraphicsD11& gfx, Camera& cam) = 0;
@@ -32,5 +31,9 @@ protected:
 	VertexConstantBuffer* mVertCB = nullptr;
 	FragmentConstantbuffer* mFragCB = nullptr;
 
-	virtual void InitUniforms(GraphicsD11& gfx) = 0;
+	void Setup(GraphicsD11& gfx);
+
+private:
+	void InitUniforms(GraphicsD11& gfx);
+
 };

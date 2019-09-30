@@ -1,10 +1,8 @@
 #include "Material.h"
 
-Material::Material(GraphicsD11& gfx) {
-
+void Material::Setup(GraphicsD11& gfx) {
 	LoadShader(gfx);
 	InitUniforms(gfx);
-
 	mInputLayout = new InputLayout(gfx, mLayout, mVertShader->GetBytecode());
 }
 

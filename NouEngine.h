@@ -5,12 +5,7 @@
 #include "NouWindow.h"
 #include "NouTimer.h"
 
-
-#include "Cube.h"
 #include "Camera.h"
-#include "BaseMaterial.h"
-#include "Mesh.h"
-#include "TextureLoader.h"
 
 class NouEngine
 {
@@ -21,8 +16,7 @@ public:
 private:
 	NouWindow window;
 	NouTimer timer;
-	std::vector<Mesh> meshes;
-	
+
 	void ExecuteFrame();
 
 };

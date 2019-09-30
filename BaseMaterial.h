@@ -53,7 +53,6 @@ public:
 	};
 	struct FragmentUniforms
 	{
-		UINT32 TextureMode;
 		float LightIntensity;
 		float LightPos[2];
 	};
@@ -63,7 +62,6 @@ public:
 
 	void Draw(GraphicsD11& gfx, Renderable& rend) override;
 	void Begin(GraphicsD11& gfx, Camera& cam) override;
-
 	void UpdateUniforms(GraphicsD11& gfx, Renderable& rend);
 
 private:

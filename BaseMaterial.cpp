@@ -1,10 +1,7 @@
 #include "BaseMaterial.h"
 #include "Transform.h"
 #include "Mesh.h"
-
 #include "ImGUI/imgui.h"
-
-
 
 BaseMaterial::BaseMaterial(GraphicsD11& gfx) {
 
@@ -24,29 +21,29 @@ BaseMaterial::BaseMaterial(GraphicsD11& gfx) {
 	mCurVertexUniforms.WorldToView = DirectX::XMMatrixTranspose(mCurVertexUniforms.WorldToView);
 	mCurVertexUniforms.ObjectToWorld = DirectX::XMMatrixIdentity();
 
-
 	unsigned int offs = 0;
 	mLayout = {
-		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offs += sizeof(Mesh::Vertex::Position), D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"Tangent", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offs += sizeof(Mesh::Vertex::Normal), D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"Bitangent", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offs += sizeof(Mesh::Vertex::Tangent), D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offs += sizeof(Mesh::Vertex::Bitangent), D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Position",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Normal",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offs += sizeof(Mesh::Vertex::Position), D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Tangent",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offs += sizeof(Mesh::Vertex::Normal), D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Bitangent",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offs += sizeof(Mesh::Vertex::Tangent), D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"UV",			0, DXGI_FORMAT_R32G32_FLOAT,	0, offs += sizeof(Mesh::Vertex::Bitangent), D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
+
+	Setup(gfx);
 
 }
 
 void BaseMaterial::Begin(GraphicsD11& gfx, Camera& cam) {
 	mCurVertexUniforms.CamPos = cam.mPos;
 	mCurVertexUniforms.WorldToView = cam.GetMatrix();
-
 }
 
 void BaseMaterial::UpdateUniforms(GraphicsD11& gfx, Renderable& rend) {
 
 	mCurVertexUniforms.ObjectToWorld = dx::XMMatrixTranspose(rend.GetTransform().GetLocalTransform());
-	mVertCB->Update(gfx, sizeof(VertexUniforms), &mCurVertexUniforms);
 
+	mVertCB->Update(gfx, sizeof(VertexUniforms), &mCurVertexUniforms);
 	mFragCB->Update(gfx, sizeof(FragmentUniforms), &mCurFragUniforms);
 }
 
@@ -55,9 +52,4 @@ void BaseMaterial::Draw(GraphicsD11& gfx, Renderable& rend)
 	UpdateUniforms(gfx, rend);
 	rend.Bind(gfx);
 	gfx.DrawIndexed(rend.GetIndCount());
-}
-
-void BaseMaterial::SetTextureMode(UINT32 TextureMode)
-{
-	//mCurFragUniforms.TextureMode = TextureMode;
 }
