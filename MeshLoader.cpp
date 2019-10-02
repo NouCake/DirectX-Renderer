@@ -52,9 +52,9 @@ Mesh* MeshLoader::loadMesh(std::string path) {
 	}
 
 	Mesh::Vertex::Textcoord* pUV = nullptr;
+	std::vector<Mesh::Vertex::Textcoord> uvs;
 	if (curMesh->HasTextureCoords(0)) {
 		
-		std::vector<Mesh::Vertex::Textcoord> uvs; //TODO: Does this run out of scope? :^(
 		uvs.reserve(numVerts);
 		for (int i = 0; i < numVerts; i++) {
 			uvs.push_back({curMesh->mTextureCoords[0][i].x, curMesh->mTextureCoords[0][i].y});
