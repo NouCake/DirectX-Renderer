@@ -21,5 +21,7 @@ cbuffer Uniforms
 
 float4 main(v2f input) : SV_TARGET
 {
-	return float4(1.0f, 0.0f, 1.0f, 1.0f);
+	float2 uv = input.uv;
+	if (uv.x < 0 && uv.y < 0) return float4(1.0f, 0.0f, 0.0f, 1.0f);
+	return float4(input.uv.x, input.uv.y, 0.0f, 1.0f);
 }

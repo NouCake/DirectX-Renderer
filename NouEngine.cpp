@@ -5,6 +5,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "MeshLoader.h"
 
 #ifdef USE_IMGUI
 	#include "ImGUI/imgui.h"
@@ -55,8 +56,12 @@ NouEngine::NouEngine()
 	};
 
 	GraphicsD11* g = &window.Gfx();
-	Mesh m(numVerts, vertPos, vertNorm, vertTang, vertBitang, vertTex, numInds, indecies);
-	_bm = new BindableMesh(*g, &m);
+
+	MeshLoader meshl;
+	Mesh* m = meshl.loadMesh("res/test.obj");
+
+	//Mesh m(numVerts, vertPos, vertNorm, vertTang, vertBitang, vertTex, numInds, indecies);
+	_bm = new BindableMesh(*g, m);
 	_mat = new BaseMaterial(*g);
 
 }

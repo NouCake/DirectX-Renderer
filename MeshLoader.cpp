@@ -8,7 +8,7 @@ MeshLoader::MeshLoader() {
 
 }
 
-void MeshLoader::loadMesh(std::string path) {
+Mesh* MeshLoader::loadMesh(std::string path) {
 
 	NouTimer* timer = new NouTimer();
 	timer->Mark();
@@ -46,11 +46,13 @@ void MeshLoader::loadMesh(std::string path) {
 		assert(sizeof(Mesh::Vertex::Bitangent) == sizeof(aiVector3D));
 		pTang = (Mesh::Vertex::Tangent*)(&curMesh->mTangents[0]);
 		pBitang = (Mesh::Vertex::Bitangent*)(&curMesh->mBitangents[0]);
+	} else {
+		pTang   = (Mesh::Vertex::Tangent*)  (&curMesh->mVertices[0]);
+		pBitang = (Mesh::Vertex::Bitangent*)(&curMesh->mVertices[0]);
 	}
 
 	Mesh::Vertex::Textcoord* pUV = nullptr;
 	if (curMesh->HasTextureCoords(0)) {
-		assert(sizeof(Mesh::Vertex::Textcoord) == sizeof(aiVector3D));
 		
 		std::vector<Mesh::Vertex::Textcoord> uvs; //TODO: Does this run out of scope? :^(
 		uvs.reserve(numVerts);
@@ -59,6 +61,8 @@ void MeshLoader::loadMesh(std::string path) {
 		}
 
 		pUV = uvs.data();
+	} else {
+		pUV = (Mesh::Vertex::Textcoord*)(&curMesh->mVertices[0]);
 	}
 
 	int numInds = curMesh->mNumFaces * 3;
@@ -73,9 +77,10 @@ void MeshLoader::loadMesh(std::string path) {
 	}
 	pInds = (UINT16*)inds.data();
 
-	Mesh m(numVerts, pPos, pNorm, pTang, pBitang, pUV, numInds, pInds);
+	Mesh* m = new Mesh(numVerts, pPos, pNorm, pTang, pBitang, pUV, numInds, pInds);
 	//uvs.clear();
 	inds.clear();
 
 	OutputDebugString(("Loading " + path + " took: " + std::to_string(timer->Peek()) + "\n").c_str());
+	return m;
 }

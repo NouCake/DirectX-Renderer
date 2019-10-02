@@ -6,11 +6,13 @@
 
 #include <string>
 
+#include "Mesh.h"
+
 class MeshLoader {
 
 public:
 	MeshLoader();
-	void loadMesh(std::string path);
+	Mesh* loadMesh(std::string path);
 
 private:
 	Assimp::Importer mAssimp;

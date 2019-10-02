@@ -28,6 +28,7 @@ v2f main(vi input)
 	v2f output;
 	float4 worldPos = mul(float4(input.pos.x, input.pos.y, input.pos.z, 1), ObjectToWorld);
 	output.pos = mul(worldPos, WorldToView);
+	output.uv = input.uv;
 
 	return output;
 }
