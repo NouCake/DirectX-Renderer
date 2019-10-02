@@ -7,6 +7,9 @@
 
 #include "Camera.h"
 
+#include "BindableMesh.h"
+#include "BaseMaterial.h"
+
 class NouEngine
 {
 public:
@@ -18,5 +21,8 @@ private:
 	NouTimer timer;
 
 	void ExecuteFrame();
+
+	BindableMesh* _bm;
+	BaseMaterial* _mat;
 
 };

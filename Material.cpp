@@ -3,6 +3,7 @@
 void Material::Setup(GraphicsD11& gfx) {
 	LoadShader(gfx);
 	InitUniforms(gfx);
+
 	mInputLayout = new InputLayout(gfx, mLayout, mVertShader->GetBytecode());
 }
 

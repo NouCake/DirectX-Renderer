@@ -10,15 +10,16 @@ BaseMaterial::BaseMaterial(GraphicsD11& gfx) {
 
 	mVertUniformLength = sizeof(VertexUniforms);
 	mFragUniformLength = sizeof(FragmentUniforms);
-
+ 
 	mCurFragUniforms = {};
 	mCurFragUniforms.LightIntensity = 1.0f;
 	mCurFragUniforms.LightPos[0] = 0.0f;
 
 	mCurVertexUniforms = {};
-	mCurVertexUniforms.WorldToView = DirectX::XMMatrixTranslation(0.0f, 0.0f, 5.0f);
+	mCurVertexUniforms.WorldToView = DirectX::XMMatrixTranslation(2.0f, 0.0f, 5.0f);
 	mCurVertexUniforms.WorldToView *= DirectX::XMMatrixPerspectiveFovLH(45.0f, 720.0f / 480.0f, 0.1f, 100.f);  //Projection
 	mCurVertexUniforms.WorldToView = DirectX::XMMatrixTranspose(mCurVertexUniforms.WorldToView);
+	//mCurVertexUniforms.WorldToView = DirectX::XMMatrixIdentity();
 	mCurVertexUniforms.ObjectToWorld = DirectX::XMMatrixIdentity();
 
 	unsigned int offs = 0;
@@ -35,20 +36,23 @@ BaseMaterial::BaseMaterial(GraphicsD11& gfx) {
 }
 
 void BaseMaterial::Begin(GraphicsD11& gfx, Camera& cam) {
-	mCurVertexUniforms.CamPos = cam.mPos;
-	mCurVertexUniforms.WorldToView = cam.GetMatrix();
+	mFragShader->Bind(gfx);
+	mVertShader->Bind(gfx);
+	mInputLayout->Bind(gfx);
+	mVertCB->Bind(gfx);
+	mFragCB->Bind(gfx);
+
+	//mCurVertexUniforms.CamPos = cam.mPos;
+	//mCurVertexUniforms.WorldToView = cam.GetMatrix(); 
 }
 
 void BaseMaterial::UpdateUniforms(GraphicsD11& gfx, Renderable& rend) {
-
-	mCurVertexUniforms.ObjectToWorld = dx::XMMatrixTranspose(rend.GetTransform().GetLocalTransform());
 
 	mVertCB->Update(gfx, sizeof(VertexUniforms), &mCurVertexUniforms);
 	mFragCB->Update(gfx, sizeof(FragmentUniforms), &mCurFragUniforms);
 }
 
-void BaseMaterial::Draw(GraphicsD11& gfx, Renderable& rend)
-{
+void BaseMaterial::Draw(GraphicsD11& gfx, Renderable& rend) {
 	UpdateUniforms(gfx, rend);
 	rend.Bind(gfx);
 	gfx.DrawIndexed(rend.GetIndCount());

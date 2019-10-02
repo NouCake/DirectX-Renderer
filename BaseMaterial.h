@@ -55,6 +55,7 @@ public:
 	{
 		float LightIntensity;
 		float LightPos[2];
+		float fillStruct;
 	};
 
 	BaseMaterial(GraphicsD11& gfx);

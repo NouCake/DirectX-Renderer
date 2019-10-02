@@ -45,14 +45,14 @@ public:
 public:
 	Mesh(int numVerts, Vertex::Position* vertPos, Vertex::Normal* vertNorm,
 		Vertex::Tangent* vertTang, Vertex::Bitangent* vertBitang, 
-		Vertex::Textcoord* vertTex, int numInds, UINT* indecies);
+		Vertex::Textcoord* vertTex, int numInds, UINT16* indecies);
 	~Mesh() = default;
 
 	int getNumVerts();
 	int getNumInds();
 
 	Vertex* getVerts();
-	UINT* getInds();
+	UINT16* getInds();
 
 private:
 
@@ -60,7 +60,7 @@ private:
 	int mNumInds;
 
 	Vertex* mVerts;
-	UINT* mInds;
+	UINT16* mInds;
 
 	bool mHasNormal;
 	bool mHasTangent;

@@ -8,7 +8,7 @@
 #include <iostream>
 
 Mesh::Mesh(int numVerts, Vertex::Position* vertPos, Vertex::Normal* vertNorm, 
-	Vertex::Tangent* vertTang, Vertex::Bitangent* vertBitang, Vertex::Textcoord* vertTex, int numInds, UINT* indecies) {
+	Vertex::Tangent* vertTang, Vertex::Bitangent* vertBitang, Vertex::Textcoord* vertTex, int numInds, UINT16* indecies) {
 	
 	mNumVerts = numVerts;
 	mVerts = (Vertex*)malloc(sizeof(Vertex) * mNumVerts);
@@ -49,10 +49,10 @@ Mesh::Mesh(int numVerts, Vertex::Position* vertPos, Vertex::Normal* vertNorm,
 	}
 
 	mNumInds = numInds;
-	mInds = (UINT*)malloc(sizeof(UINT) * mNumInds);
+	mInds = (UINT16*)malloc(sizeof(UINT16) * mNumInds);
 	if (mInds == nullptr) throw NouException::BaseException(__LINE__, __FILE__, "Malloc failed");
 	
-	memcpy((void*)mInds, indecies, sizeof(UINT) * mNumInds);
+	memcpy((void*)mInds, indecies, sizeof(UINT16) * mNumInds);
 }
 
 int Mesh::getNumVerts() {
@@ -67,6 +67,6 @@ Mesh::Vertex* Mesh::getVerts() {
 	return mVerts;
 }
 
-UINT* Mesh::getInds() {
+UINT16* Mesh::getInds() {
 	return mInds;
 }

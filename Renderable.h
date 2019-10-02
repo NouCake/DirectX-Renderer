@@ -22,16 +22,10 @@ public:
 		return mIndCount;
 	}
 
-	Transform& GetTransform()
-	{
-		return *mTransform;
-	}
-
 protected:
 	VertexBuffer* mVertBuf;
 	IndexBuffer* mIndBuf;
 	Topology* mTopo;
 
 	UINT mIndCount;
-	Transform* mTransform = new Transform();
 };

@@ -5,6 +5,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+
 #ifdef USE_IMGUI
 	#include "ImGUI/imgui.h"
 	#include "ImGUI/imgui_impl_win32.h"
@@ -15,6 +16,48 @@ NouEngine::NouEngine()
 	:
 	window(1280, 720, "NouEnginge") 
 {
+
+	int numVerts = 4;
+	Mesh::Vertex::Position vertPos[4] = {
+		{0.0f, 0.0f, 0.0f},
+		{0.0f, 1.0f, 0.0f},
+		{1.0f, 0.0f, 0.0f},
+		{1.0f, 1.0f, 0.0f}
+	};
+	Mesh::Vertex::Normal vertNorm[4] = {
+		{0.0f, 0.0f, 1.0f},
+		{0.0f, 0.0f, 1.0f},
+		{0.0f, 0.0f, 1.0f},
+		{0.0f, 0.0f, 1.0f}
+	};
+	Mesh::Vertex::Tangent vertTang[4] = {
+		{1.0f, 0.0f, 0.0f},
+		{1.0f, 0.0f, 0.0f},
+		{1.0f, 0.0f, 0.0f},
+		{1.0f, 0.0f, 0.0f}
+	};
+	Mesh::Vertex::Bitangent vertBitang[4] = {
+		{0.0f, 1.0f, 0.0f},
+		{0.0f, 1.0f, 0.0f},
+		{0.0f, 1.0f, 0.0f},
+		{0.0f, 1.0f, 0.0f}
+	};
+	Mesh::Vertex::Textcoord vertTex[4] = {
+		{0.0f, 1.0f},
+		{0.0f, 0.0f},
+		{1.0f, 1.0f},
+		{1.0f, 0.0f}
+	};
+	int numInds = 6;
+	UINT16 indecies[6] = {
+		0, 1, 3,
+		3, 1, 2
+	};
+
+	GraphicsD11* g = &window.Gfx();
+	Mesh m(numVerts, vertPos, vertNorm, vertTang, vertBitang, vertTex, numInds, indecies);
+	_bm = new BindableMesh(*g, &m);
+	_mat = new BaseMaterial(*g);
 
 }
 
@@ -52,19 +95,17 @@ void NouEngine::ExecuteFrame() {
 	ImGui::NewFrame();
 #endif
 
-	float t = timer.Mark();
 	GraphicsD11* g = &window.Gfx();
 	g->ClearBuffer(0.2f, 0.2f, 1, 1);
 
 #ifdef USE_IMGUI
-	static float speedMultiplier = 0.0f;
 	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::SliderFloat("speed", &speedMultiplier, 0.0f, 2.0f);
-	t *= speedMultiplier;
 #endif
 
 	static Camera* cam = new Camera(window.GetWidth(), window.GetHeight());
-	cam->SpawnImGuiControl();
+
+	_mat->Begin(*g, *cam);
+	_mat->Draw(*g, *_bm);
 
 	g->OnFrameEnd();
 

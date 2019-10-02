@@ -56,8 +56,6 @@ Cube::Cube(GraphicsD11& gfx)
 	mTextureDiff = new Texture(gfx, "cube.png");
 
 	mIndCount = std::size(ind);
-
-	mTransform->SetPosition({ 1.0f, 0.0f, 0.0f, 0.0f });
 }
 
 void Cube::Bind(GraphicsD11& gfx)

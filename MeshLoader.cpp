@@ -62,16 +62,16 @@ void MeshLoader::loadMesh(std::string path) {
 	}
 
 	int numInds = curMesh->mNumFaces * 3;
-	UINT* pInds = nullptr;
+	UINT16* pInds = nullptr;
 
-	std::vector<UINT> inds;
+	std::vector<UINT16> inds;
 	inds.reserve(curMesh->mNumFaces*3);
 	for (int i = 0; i < curMesh->mNumFaces; i++) {
 		inds.push_back(curMesh->mFaces[i].mIndices[0]);
 		inds.push_back(curMesh->mFaces[i].mIndices[1]);
 		inds.push_back(curMesh->mFaces[i].mIndices[2]);
 	}
-	pInds = (UINT*)inds.data();
+	pInds = (UINT16*)inds.data();
 
 	Mesh m(numVerts, pPos, pNorm, pTang, pBitang, pUV, numInds, pInds);
 	//uvs.clear();

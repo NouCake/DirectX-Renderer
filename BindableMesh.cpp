@@ -1,25 +1,22 @@
 #include "BindableMesh.h"
 
-BindableMesh::BindableMesh(GraphicsD11& gfx, Mesh mesh) {
+BindableMesh::BindableMesh(GraphicsD11& gfx, Mesh* mesh) {
 	
-	mVertBuffer = new VertexBuffer(
+	mMesh = mesh;
+	mIndCount = mesh->getNumInds();
+
+	mVertBuf = new VertexBuffer(
 		gfx,
-		sizeof(Mesh::Vertex) * mesh.getNumVerts(),
+		sizeof(Mesh::Vertex) * mesh->getNumVerts(),
 		sizeof(Mesh::Vertex),
-		mesh.getVerts()
+		mesh->getVerts()
 	);
 
-	mIndBuffer = new IndexBuffer(
+	mIndBuf = new IndexBuffer(
 		gfx,
-		mesh.getNumInds(),
-		mesh.getInds()
+		mesh->getNumInds(),
+		mesh->getInds()
 	);
 
 	mTopo = new Topology(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-}
-
-void BindableMesh::Bind(GraphicsD11& gfx) noexcept {
-	mVertBuffer->Bind(gfx);
-	mIndBuffer->Bind(gfx);
-	mTopo->Bind(gfx);
 }

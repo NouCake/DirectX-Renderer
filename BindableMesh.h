@@ -7,15 +7,11 @@
 
 #include "Mesh.h"
 
-class BindableMesh : public Bindable {
+class BindableMesh : public Renderable {
 
 public:
-	BindableMesh(GraphicsD11& gfx, Mesh mesh);
-	void Bind(GraphicsD11& gfx) noexcept override;
+	BindableMesh(GraphicsD11& gfx, Mesh* mesh);
 
 private:
-	VertexBuffer* mVertBuffer;
-	IndexBuffer* mIndBuffer;
-	Topology* mTopo;
-
+	Mesh* mMesh;
 };

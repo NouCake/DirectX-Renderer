@@ -10,9 +10,10 @@ struct v2f
 struct vi
 {
 	float3 pos : Position;
-	float4 color : Color;
-	float2 uv : UV;
 	float3 normal : Normal;
+	float3 tang : Tangent;
+	float3 bitang : Bitangent;
+	float2 uv : UV;
 };
 
 cbuffer Uniforms
@@ -27,10 +28,6 @@ v2f main(vi input)
 	v2f output;
 	float4 worldPos = mul(float4(input.pos.x, input.pos.y, input.pos.z, 1), ObjectToWorld);
 	output.pos = mul(worldPos, WorldToView);
-	output.uv = input.uv;
-	output.normal = input.normal;
-	output.camDir = worldPos - camPos;
-	output.worldPos = worldPos;
 
 	return output;
 }
